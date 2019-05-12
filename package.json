@@ -1,0 +1,59 @@
+{
+  "name": "mystery-project",
+  "version": "0.0.1",
+  "description": "Mystery project that exercises a wide variety of frontend development skills.",
+  "main": "index.js",
+  "scripts": {
+    "start": "next start",
+    "build": "next build",
+    "dev": "next dev",
+    "test": "jest"
+  },
+  "keywords": [
+    "react",
+    "testing",
+    "spa",
+    "ssr"
+  ],
+  "author": "Slava Pavlutin <sl.pavlutin@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@emotion/core": "^10.0.10",
+    "@zeit/next-css": "^1.0.1",
+    "@zeit/next-typescript": "^1.1.1",
+    "emotion-theming": "^10.0.10",
+    "lodash-es": "^4.17.11",
+    "next": "^8.1.0",
+    "next-transpile-modules": "^2.3.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/babel__core": "^7.1.1",
+    "@types/dotenv": "^6.1.1",
+    "@types/jest": "^24.0.12",
+    "@types/lodash-es": "^4.17.3",
+    "@types/next": "^8.0.5",
+    "@types/prettier": "^1.16.3",
+    "@types/react": "^16.8.17",
+    "@types/react-dom": "^16.8.4",
+    "@types/zeit__next-typescript": "^0.1.2",
+    "babel-jest": "^24.8.0",
+    "dotenv": "^8.0.0",
+    "husky": "^2.2.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^24.8.0",
+    "prettier": "^1.17.0",
+    "react-testing-library": "^7.0.0",
+    "typescript": "^3.4.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test"
+    }
+  }
+}
