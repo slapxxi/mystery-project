@@ -86,3 +86,6 @@ typings/
 
 # Next.js
 .next/
+
+# VSCode
+.vscode/
