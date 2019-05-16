@@ -19,5 +19,6 @@
     "paths": {
       "@self/*": ["./*"]
     }
-  }
+  },
+  "exclude": ["node_modules"]
 }

@@ -5,5 +5,8 @@ exports[`renders 1`] = `
   <h1>
     Index Page
   </h1>
+  <img
+    src="https://cdn.dribbble.com/users/3178178/screenshots/6487916/hunter-10_000-bc.jpg"
+  />
 </div>
 `;

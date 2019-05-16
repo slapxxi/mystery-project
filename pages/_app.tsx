@@ -1,4 +1,5 @@
 import AppContainer from '@self/components/AppContainer';
+import fetchData from '@self/lib/services/fetchData';
 import App, { Container as NextContainer, NextAppContext } from 'next/app';
 import React from 'react';
 
@@ -14,13 +15,17 @@ class MyApp extends App {
     return { pageProps };
   }
 
+  public componentDidMount() {
+    fetchData().then(console.log);
+  }
+
   render() {
     let { Component, pageProps } = this.props;
 
     return (
       <NextContainer>
         <AppContainer>
-        <Component {...pageProps} />
+          <Component {...pageProps} />
         </AppContainer>
       </NextContainer>
     );

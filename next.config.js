@@ -4,10 +4,27 @@ const dotenv = require('dotenv');
 const withTypescript = require('@zeit/next-typescript');
 const withCSS = require('@zeit/next-css');
 const withTranspileModules = require('next-transpile-modules');
+const withBundleAnalyzer = require('@zeit/next-bundle-analyzer');
+
+let activeEnv = process.env.NODE_ENV;
 
 dotenv.config();
 
 const baseConfig = {
+  analyzeServer: ['server', 'both'].includes(process.env.BUNDLE_ANALYZE),
+  analyzeBrowser: ['browser', 'both'].includes(process.env.BUNDLE_ANALYZE),
+
+  bundleAnalyzerConfig: {
+    server: {
+      analyzerMode: 'static',
+      reportFilename: '../bundles/server.html',
+    },
+    browser: {
+      analyzerMode: 'static',
+      reportFilename: '../bundles/client.html',
+    },
+  },
+
   env: {
     firebase: {
       apiKey: process.env.FIREBASE_API_KEY,
@@ -41,4 +58,6 @@ const baseConfig = {
   },
 };
 
-module.exports = withTypescript(withCSS(withTranspileModules(baseConfig)));
+module.exports = withBundleAnalyzer(
+  withTypescript(withCSS(withTranspileModules(baseConfig)))
+);

@@ -89,3 +89,6 @@ typings/
 
 # VSCode
 .vscode/
+
+# Bundles
+bundles/
