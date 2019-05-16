@@ -1,12 +1,12 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 
-function IndexPage() {
+function SettingsPage() {
   return (
     <div>
-      <h1>Index Page</h1>
+      <h1>Settings Page</h1>
     </div>
   );
 }
 
-export default IndexPage;
+export default SettingsPage;

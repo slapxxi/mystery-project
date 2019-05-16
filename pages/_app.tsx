@@ -1,4 +1,5 @@
-import App, { Container, NextAppContext } from 'next/app';
+import AppContainer from '@self/components/AppContainer';
+import App, { Container as NextContainer, NextAppContext } from 'next/app';
 import React from 'react';
 
 class MyApp extends App {
@@ -17,9 +18,11 @@ class MyApp extends App {
     let { Component, pageProps } = this.props;
 
     return (
-      <Container>
+      <NextContainer>
+        <AppContainer>
         <Component {...pageProps} />
-      </Container>
+        </AppContainer>
+      </NextContainer>
     );
   }
 }

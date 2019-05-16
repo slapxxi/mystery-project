@@ -1,9 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders 1`] = `
-<div
-  class="css-1msxndd-IndexPage"
->
+<div>
   <h1>
     Index Page
   </h1>
