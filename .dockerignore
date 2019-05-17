@@ -88,3 +88,22 @@ typings/
 
 # Bundles
 bundles/
+
+# Git
+.git/
+.gitignore
+
+# Prettier
+prettier.config.js
+
+# Jest
+jest.config.js
+jestPreprocess.js
+setupTests.js
+*.spec.*
+
+# SVGO
+svgo.config.yml
+
+# Mac OS
+.DS_Store
