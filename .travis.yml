@@ -10,3 +10,7 @@ install:
 
 script:
   - docker ps | grep -q myst
+
+after_sucess:
+  - sh .travis/deploy_dockerhub.sh
+  - test "$TRAVIS_BRANCH" = "master" && sh .travis/deploy_heroku.sh
