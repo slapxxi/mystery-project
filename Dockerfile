@@ -11,7 +11,7 @@ COPY . .
 
 RUN npm run build
 
-RUN adduser -D admin
-USER admin
+RUN adduser -D myuser
+USER myuser
 
 CMD [ "npm", "start" ]
