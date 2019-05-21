@@ -80,9 +80,6 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-# Next.js
-.next/
-
 # VSCode
 .vscode/
 
