@@ -1,15 +1,12 @@
-language: node_js
-
 services:
   - docker
 
 before_install:
   - docker build -t slavapavlutin/mystery-project .
-  - docker ps -a
   - docker run slavapavlutin/mystery-project /bin/sh -c "npm test"
 
 install:
-  - npm install
+  - docker run -d -p 127.0.0.1:80:3000 --name myst slavapavlutin/mystery-project
 
 script:
-  - npm test
+  - docker ps | grep -q myst
