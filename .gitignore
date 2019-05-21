@@ -86,6 +86,7 @@ typings/
 
 # Next.js
 .next/
+dist/
 
 # VSCode
 .vscode/

@@ -1,10 +1,12 @@
 const path = require('path');
 const dotenv = require('dotenv');
+const pipe = require('pipeline.macro');
 
 const withTypescript = require('@zeit/next-typescript');
 const withCSS = require('@zeit/next-css');
 const withTranspileModules = require('next-transpile-modules');
 const withBundleAnalyzer = require('@zeit/next-bundle-analyzer');
+const withOffline = require('next-offline');
 
 let activeEnv = process.env.NODE_ENV;
 
@@ -48,6 +50,35 @@ const baseConfig = {
 
   transpileModules: ['lodash-es'],
 
+  workboxOpts: {
+    swDest: 'static/service-worker.js',
+    runtimeCaching: [
+      {
+        urlPattern: /.png$/,
+        handler: 'CacheFirst',
+      },
+      {
+        urlPattern: /.jpg$/,
+        handler: 'CacheFirst',
+      },
+      {
+        urlPattern: /^https?.*/,
+        handler: 'NetworkFirst',
+        options: {
+          cacheName: 'https-calls',
+          networkTimeoutSeconds: 15,
+          expiration: {
+            maxEntries: 150,
+            maxAgeSeconds: 30 * 24 * 60 * 60, // 1 month
+          },
+          cacheableResponse: {
+            statuses: [0, 200],
+          },
+        },
+      },
+    ],
+  },
+
   webpack(config, options) {
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -59,5 +90,5 @@ const baseConfig = {
 };
 
 module.exports = withBundleAnalyzer(
-  withTypescript(withCSS(withTranspileModules(baseConfig)))
+  withTypescript(withCSS(withTranspileModules(withOffline(baseConfig))))
 );

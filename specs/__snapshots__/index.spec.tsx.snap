@@ -6,6 +6,7 @@ exports[`renders 1`] = `
     Index Page
   </h1>
   <img
+    class="css-86v4wi-Image"
     src="https://cdn.dribbble.com/users/3178178/screenshots/6487916/hunter-10_000-bc.jpg"
   />
 </div>

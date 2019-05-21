@@ -18,7 +18,9 @@ function Layout(props: Props) {
     >
       <Header />
       <main>{children}</main>
-      <footer>Footer</footer>
+      <footer>
+        <a href="https://github.com/slavapavlutin">@slavapavlutin</a>
+      </footer>
     </div>
   );
 }
