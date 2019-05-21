@@ -1,3 +1,9 @@
-let firebaseConfig = process.env.firebase as Object;
+import getConfig from 'next/config';
+
+let { publicRuntimeConfig } = getConfig();
+
+let firebaseConfig = {
+  ...publicRuntimeConfig.firebase,
+};
 
 export default firebaseConfig;

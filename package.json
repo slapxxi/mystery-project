@@ -12,7 +12,7 @@
     "test": "jest",
     "lint-staged": "lint-staged",
     "docker": "npm run docker:build && npm run docker:run",
-    "docker:build": "env-cmd ./bin/docker_build.sh",
+    "docker:build": "./bin/docker_build.sh",
     "docker:run": "./bin/docker_run.sh",
     "docker:stop": "docker container stop server",
     "docker:deploy": "env-cmd ./bin/docker_deploy.sh",
