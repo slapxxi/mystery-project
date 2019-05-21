@@ -98,3 +98,6 @@ svgo.config.yml
 
 # Mac OS
 .DS_Store
+
+# Environment
+.env

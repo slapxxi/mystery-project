@@ -11,6 +11,10 @@
     "export": "next build && next export -o dist",
     "test": "jest",
     "lint-staged": "lint-staged",
+    "docker": "npm run docker:build && npm run docker:run",
+    "docker:build": "env-cmd ./scripts/docker_build.sh",
+    "docker:run": "./scripts/docker_run.sh",
+    "docker:stop": "docker container stop server",
     "analyze:server": "BUNDLE_ANALYZE=server npm run build",
     "analyze:browser": "BUNDLE_ANALYZE=browser npm run build"
   },
@@ -34,6 +38,7 @@
     "compression": "^1.7.4",
     "dotenv": "^8.0.0",
     "emotion-theming": "^10.0.10",
+    "env-cmd": "^9.0.1",
     "express": "^4.17.0",
     "firebase": "^6.0.2",
     "lodash-es": "^4.17.11",
