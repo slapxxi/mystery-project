@@ -8,7 +8,7 @@ const URL =
 function IndexPage() {
   return (
     <div>
-      <h1>Index Page</h1>
+      <h1 data-testid="title">Index</h1>
       <Image src={URL} />
     </div>
   );
