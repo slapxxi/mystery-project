@@ -1,4 +1,4 @@
-# Mystery Project
+# Mystery Project [![Build Status](https://travis-ci.com/slavapavlutin/mystery-project.svg?branch=master)](https://travis-ci.com/slavapavlutin/mystery-project)
 
 The goal of this project is to enable learning a variety of skills necessary in frontend
 development. It combines various features to make the learning process fun and engaging.
