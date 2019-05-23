@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Next.js Custom Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "NODE_ENV=production node server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@emotion/core": "^10.0.10",
+    "compression": "^1.7.4",
+    "express": "^4.17.0",
+    "firebase": "^6.0.3",
+    "next": "^8.1.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  }
+}

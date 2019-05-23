@@ -1,15 +1,27 @@
-FROM node:12.2-alpine
+FROM node:12.2-alpine as build
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --only=production
 
 ENV NODE_ENV=production
 
 COPY . .
 
 RUN npm run build
+
+
+FROM node:12.2-alpine
+
+WORKDIR /usr/src/app
+
+ENV NODE_ENV=production
+
+COPY --from=build /usr/src/app/.next/ ./.next/
+COPY server.js  server/package*.json server/next.config.js ./
+
+RUN npm install
 
 RUN adduser -D myuser
 USER myuser

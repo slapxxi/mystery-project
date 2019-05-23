@@ -14,6 +14,7 @@
     "docker": "npm run docker:build && npm run docker:run",
     "docker:build": "./bin/docker_build.sh",
     "docker:run": "./bin/docker_run.sh",
+    "docker:attach": "docker exec -it server /bin/sh -c \"[ -e /bin/bash ] && /bin/bash || /bin/sh\"",
     "docker:stop": "docker container stop server",
     "docker:deploy": "env-cmd ./bin/docker_deploy.sh",
     "analyze:server": "BUNDLE_ANALYZE=server npm run build",
