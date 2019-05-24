@@ -1,4 +1,4 @@
-FROM node:12.2-alpine as build
+FROM node:12.3.1-alpine as build
 
 WORKDIR /usr/src/app
 
@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build
 
 
-FROM node:12.2-alpine
+FROM node:12.3.1-alpine
 
 WORKDIR /usr/src/app
 
