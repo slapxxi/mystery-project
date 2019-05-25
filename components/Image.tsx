@@ -29,7 +29,7 @@ function generateSource(type: SourceType, src: string) {
     <source
       key={`${src}-${type}`}
       data-testid={`source-${type}`}
-      type={`image/${type}`}
+      type={`image/${type === 'jpg' ? 'jpeg' : type}`}
       srcSet={generateSrcSet(type, src)}
     />
   );
