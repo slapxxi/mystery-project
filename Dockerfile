@@ -20,6 +20,7 @@ ENV NODE_ENV=production
 
 COPY --from=build /usr/src/app/.next/ ./.next/
 COPY server.js  server/package*.json server/next.config.js ./
+COPY static/ ./static/
 
 RUN npm install
 

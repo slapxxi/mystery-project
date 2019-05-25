@@ -2,8 +2,7 @@
 import { jsx } from '@emotion/core';
 import Image from '@self/components/Image';
 
-const URL =
-  'https://cdn.dribbble.com/users/3178178/screenshots/6487916/hunter-10_000-bc.jpg';
+const URL = '/static/img/camping.jpg';
 
 function IndexPage() {
   return (

@@ -93,7 +93,7 @@
     ],
     "*.{jpg,png}": [
       "npm run image",
-      "git add"
+      "git add static/img/"
     ],
     "*.svg": [
       "svgo --config=svgo.config.yml --",
