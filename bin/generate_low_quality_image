@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+const path = require('path');
+const sharp = require('sharp');
+
+const SCALES = [1, 2, 3, 4];
+const SCALE_MULTIPLIER = 320;
+
+let src = process.argv[2];
+let resolvedSrc = path.resolve(src);
+let { dir, name } = path.parse(resolvedSrc);
+
+SCALES.forEach((scale) => {
+  let resizedImage = sharp(resolvedSrc).resize({
+    width: scale * SCALE_MULTIPLIER,
+  });
+
+  resizedImage.png().toFile(path.join(dir, `${name}-${scale}x.png`));
+  resizedImage.jpeg().toFile(path.join(dir, `${name}-${scale}x.jpg`));
+  resizedImage.webp().toFile(path.join(dir, `${name}-${scale}x.webp`));
+});
