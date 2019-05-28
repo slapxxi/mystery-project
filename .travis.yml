@@ -4,13 +4,6 @@ env:
 services:
   - docker
 
-before_install:
-  - docker build -t slavapavlutin/mystery-project .
-  - docker run slavapavlutin/mystery-project /bin/sh -c "npm test"
-
-install:
-  - docker run -d -p 127.0.0.1:80:3000 --name myst slavapavlutin/mystery-project
-
 script:
   - docker ps | grep -q myst
 
