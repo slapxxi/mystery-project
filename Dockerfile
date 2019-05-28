@@ -3,7 +3,7 @@ FROM node:12.3.1-alpine as build
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-RUN npm install --only=production
+RUN npm install
 
 ENV NODE_ENV=production
 
