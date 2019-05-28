@@ -1,9 +1,10 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { ComponentProps } from 'react';
+import Url from 'url-parse';
 import styles from './Image.styles';
 
-type SourceType = 'webp' | 'jpg' | 'png';
+type ImageType = 'webp' | 'jpg' | 'png';
 
 interface Props extends ComponentProps<'img'> {}
 
@@ -19,15 +20,16 @@ function Image(props: Props) {
 }
 
 function generateSources(src: string) {
-  return (['webp', 'jpg', 'png'] as SourceType[]).map((sourceType) =>
-    generateSource(sourceType, src)
-  );
+  return (['webp', 'jpg', 'png'] as ImageType[]).map((sourceType) => (
+    <Source type={sourceType} src={src} key={`${src}-${sourceType}`} />
+  ));
 }
 
-function generateSource(type: SourceType, src: string) {
+function Source(props: { type: ImageType; src: string }) {
+  let { type, src } = props;
+
   return (
     <source
-      key={`${src}-${type}`}
       data-testid={`source-${type}`}
       type={`image/${type === 'jpg' ? 'jpeg' : type}`}
       srcSet={generateSrcSet(type, src)}
@@ -35,26 +37,22 @@ function generateSource(type: SourceType, src: string) {
   );
 }
 
-function generateSrcSet(type: SourceType, src: string) {
-  let { host, name } = parseURL(src);
+function generateSrcSet(imageType: ImageType, src: string) {
+  let url = new Url(src, {}, true);
+
   return [
-    `${createURL(host, `${name}-1x`, type)} 320w`,
-    `${createURL(host, `${name}-2x`, type)} 640w`,
-    `${createURL(host, `${name}-3x`, type)} 960w`,
-    `${createURL(host, `${name}-4x`, type)} 1280w`,
+    `${urlToSrcsetProperty(url, `$1-1x.${imageType}`)} 320w`,
+    `${urlToSrcsetProperty(url, `$1-2x.${imageType}`)} 640w`,
+    `${urlToSrcsetProperty(url, `$1-3x.${imageType}`)} 960w`,
+    `${urlToSrcsetProperty(url, `$1-4x.${imageType}`)} 1280w`,
   ].join(', ');
 }
 
-function parseURL(url: string) {
-  let parts = url.split('/');
-  let host = parts.slice(0, -1).join('/');
-  let [name, ext] = parts.slice(-1)[0].split('.');
+function urlToSrcsetProperty(url: Url, name: string) {
+  let result = new Url(url.toString(), {});
+  result.set('pathname', url.pathname.replace(/(\w+)\.\S*/, name));
 
-  return { host, name, ext };
-}
-
-function createURL(host: string, name: string, ext: string) {
-  return `${host}/${name}.${ext}`;
+  return result.toString();
 }
 
 export default Image;

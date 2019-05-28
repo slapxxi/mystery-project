@@ -1,17 +1,20 @@
-import Link from 'next/link';
+import Link from '@self/components/Link';
+import { withNamespaces } from '@self/i18n';
 
-function Header() {
+function Header(props) {
+  let { t } = props;
+
   return (
     <header>
       <ul>
         <li>
           <Link href="/">
-            <a>Home</a>
+            <a>{t('index')}</a>
           </Link>
         </li>
         <li>
           <Link href="/settings">
-            <a>Settings</a>
+            <a>{t('settings')}</a>
           </Link>
         </li>
       </ul>
@@ -19,4 +22,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default withNamespaces('header')(Header);

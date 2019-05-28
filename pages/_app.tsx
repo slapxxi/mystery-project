@@ -1,4 +1,5 @@
 import AppContainer from '@self/components/AppContainer';
+import { appWithTranslation } from '@self/i18n';
 import fetchData from '@self/lib/services/fetchData';
 import App, { Container as NextContainer, NextAppContext } from 'next/app';
 import React from 'react';
@@ -32,4 +33,4 @@ class MyApp extends App {
   }
 }
 
-export default MyApp;
+export default appWithTranslation(MyApp);

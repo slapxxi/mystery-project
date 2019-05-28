@@ -6,6 +6,7 @@
   "repository": "https://github.com/slavapavlutin/mystery-project",
   "scripts": {
     "start": "NODE_ENV=production node server.js",
+    "start:debug": "DEBUG=express:* NODE_ENV=production node --inspect server.js",
     "build": "next build",
     "dev": "node server.js",
     "export": "next build && next export -o dist",
@@ -46,11 +47,13 @@
     "firebase": "^6.0.3",
     "lodash-es": "^4.17.11",
     "next": "^8.1.0",
+    "next-i18next": "^0.40.1",
     "next-offline": "^4.0.1",
     "next-transpile-modules": "^2.3.1",
     "pipeline.macro": "^1.1.0",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "url-parse": "^1.4.7"
   },
   "devDependencies": {
     "@types/babel__core": "^7.1.2",
@@ -66,6 +69,7 @@
     "@types/react-dom": "^16.8.4",
     "@types/sharp": "^0.22.2",
     "@types/svgo": "^1.0.1",
+    "@types/url-parse": "^1.4.3",
     "@types/zeit__next-typescript": "^0.1.2",
     "babel-jest": "^24.8.0",
     "babel-plugin-macros": "^2.5.1",

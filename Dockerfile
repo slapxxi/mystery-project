@@ -19,7 +19,7 @@ WORKDIR /usr/src/app
 ENV NODE_ENV=production
 
 COPY --from=build /usr/src/app/.next/ ./.next/
-COPY server.js  server/package*.json server/next.config.js ./
+COPY server.js i18n.js server/package*.json server/next.config.js ./
 COPY static/ ./static/
 
 RUN npm install

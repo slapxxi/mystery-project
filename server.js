@@ -1,11 +1,9 @@
-const { createServer } = require('http');
-const { createReadStream } = require('fs');
-const { parse } = require('url');
 const path = require('path');
-
 const express = require('express');
 const compression = require('compression');
 const next = require('next');
+const nextI18NextMiddleware = require('next-i18next/middleware');
+const nexti18next = require('./i18n');
 
 let dev = process.env.NODE_ENV !== 'production';
 let port = parseInt(process.env.PORT, 10) || 3000;
@@ -19,6 +17,8 @@ app.prepare().then(() => {
   if (!dev) {
     server.use(compression());
   }
+
+  server.use(nextI18NextMiddleware(nexti18next));
 
   server.get('/service-worker.js', ServiceWorker(app));
 
