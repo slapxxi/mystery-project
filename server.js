@@ -18,9 +18,9 @@ app.prepare().then(() => {
     server.use(compression());
   }
 
-  server.use(nextI18NextMiddleware(nexti18next));
-
   server.get('/service-worker.js', ServiceWorker(app));
+
+  server.use(nextI18NextMiddleware(nexti18next));
 
   server.get('*', (req, res) => {
     return handle(req, res);
