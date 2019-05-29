@@ -2,7 +2,9 @@
 import { jsx } from '@emotion/core';
 import { withNamespaces } from '@self/i18n';
 
-function SettingsPage(props) {
+interface Props extends PageProps {}
+
+function SettingsPage(props: Props) {
   let { t } = props;
 
   return (

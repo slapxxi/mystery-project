@@ -1,1 +1,8 @@
-{ "index": "Home", "settings": "Settings" }
+{
+  "index": "Home",
+  "settings": "Settings",
+  "login": "Sign In",
+  "posts": "Posts",
+  "menu": "Menu",
+  "close": "Close"
+}

@@ -50,16 +50,20 @@ const baseConfig = {
 
   transpileModules: ['lodash-es'],
 
+  // generateInDevMode: true,
+
   workboxOpts: {
     swDest: 'static/service-worker.js',
     runtimeCaching: [
       {
-        urlPattern: /.png$/,
+        urlPattern: /.(png|jpg|webp|gif|svg)$/,
         handler: 'CacheFirst',
-      },
-      {
-        urlPattern: /.jpg$/,
-        handler: 'CacheFirst',
+        options: {
+          cacheName: 'images',
+          expiration: {
+            maxEntries: 30,
+          },
+        },
       },
       {
         urlPattern: /^https?.*/,

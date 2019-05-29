@@ -6,3 +6,9 @@ declare module '*.module.css' {
 declare module '*.svg' {
   export default 'image';
 }
+
+declare module NodeJS {
+  interface Process {
+    browser: boolean;
+  }
+}

@@ -43,7 +43,7 @@
     "dotenv": "^8.0.0",
     "emotion-theming": "^10.0.10",
     "env-cmd": "^9.0.1",
-    "express": "^4.17.0",
+    "express": "^4.17.1",
     "firebase": "^6.0.3",
     "lodash-es": "^4.17.11",
     "next": "^8.1.0",
@@ -65,7 +65,7 @@
     "@types/next": "^8.0.5",
     "@types/prettier": "^1.16.4",
     "@types/preval.macro": "^3.0.0",
-    "@types/react": "^16.8.18",
+    "@types/react": "^16.8.19",
     "@types/react-dom": "^16.8.4",
     "@types/sharp": "^0.22.2",
     "@types/svgo": "^1.0.1",
@@ -83,7 +83,7 @@
     "react-testing-library": "^7.0.1",
     "sharp": "^0.22.1",
     "svgo": "^1.2.2",
-    "typescript": "^3.4.5"
+    "typescript": "^3.5.1"
   },
   "husky": {
     "hooks": {
