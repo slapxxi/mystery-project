@@ -11,6 +11,7 @@ services:
   - docker
 
 install:
+  - npm config set package-lock false
   - npm install
 
 script: npm test
