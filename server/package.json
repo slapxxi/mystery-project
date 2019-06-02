@@ -10,6 +10,7 @@
   "dependencies": {
     "@emotion/core": "^10.0.10",
     "compression": "^1.7.4",
+    "emotion-theming": "^10.0.10",
     "express": "^4.17.1",
     "firebase": "^6.0.3",
     "next": "^8.1.0",

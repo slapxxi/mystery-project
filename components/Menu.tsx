@@ -1,8 +1,10 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
+import { Global, jsx } from '@emotion/core';
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+import BurgerIcon from './icons/BurgerIcon';
+import CloseIcon from './icons/CloseIcon';
 import Link from './Link';
 import styles from './Menu.styles';
 
@@ -13,22 +15,9 @@ function Menu(props: Props) {
   let [open, setOpen] = useState(false);
 
   useEffect(() => {
-    console.log('mounting');
     Router.events.on('routeChangeComplete', handleRouteChange);
     return () => Router.events.off('routeChangeComplete', handleRouteChange);
   }, []);
-
-  useEffect(() => {
-    let root = document.getElementById('root');
-
-    if (root) {
-      if (open) {
-        root.style.overflow = 'hidden';
-      } else {
-        root.style.overflow = '';
-      }
-    }
-  }, [open]);
 
   function handleRouteChange() {
     setOpen(false);
@@ -39,17 +28,18 @@ function Menu(props: Props) {
   }
 
   return (
-    <div>
+    <div css={styles.container}>
+      {open && <Global styles={styles.global} />}
       <button css={styles.button} onClick={handleOpen}>
-        {t('menu')}
+        <BurgerIcon css={styles.icon} />
       </button>
-      {open && <Navigation onClose={handleOpen} t={t} />}
+      <Navigation onClose={handleOpen} t={t} open={open} />
     </div>
   );
 }
 
 function Navigation(props) {
-  let { t, onClose } = props;
+  let { open, t, onClose } = props;
 
   if (!process.browser) {
     return null;
@@ -62,10 +52,12 @@ function Navigation(props) {
   }
 
   return ReactDOM.createPortal(
-    <nav css={styles.nav}>
-      <button css={styles.button} onClick={onClose}>
-        {t('close')}
-      </button>
+    <nav css={styles.nav} className={open ? 'active' : ''}>
+      <header css={styles.navHeader}>
+        <button css={styles.menuButton} onClick={onClose}>
+          <CloseIcon css={styles.icon} />
+        </button>
+      </header>
 
       <ul css={styles.list}>
         <li>
@@ -74,12 +66,7 @@ function Navigation(props) {
           </Link>
         </li>
         <li>
-          <Link href="/posts">
-            <a>{t('posts')}</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/settings">
+          <Link href="/settings" prefetch>
             <a>{t('settings')}</a>
           </Link>
         </li>

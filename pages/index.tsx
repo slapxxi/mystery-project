@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/core';
 import Image from '@self/components/Image';
 import { withNamespaces } from '@self/i18n';
 
@@ -11,7 +11,12 @@ function IndexPage(props) {
   return (
     <div>
       <h1 data-testid="title">{t('index')}</h1>
-      <Image src={URL} />
+      <Image
+        css={css`
+          width: 100%;
+        `}
+        src={URL}
+      />
     </div>
   );
 }
