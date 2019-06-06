@@ -40,6 +40,11 @@ export namespace Server {
 
   export interface Response extends http.ServerResponse {}
 
+  export interface AuthResponse {
+    status: boolean;
+    decodedToken: Auth.User;
+  }
+
   export interface Request extends http.IncomingMessage {
     firebaseServer: admin.app.App;
     locale: 'en' | 'ru';
