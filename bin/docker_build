@@ -1,2 +1,2 @@
 #!/bin/sh
-docker build -t slavapavlutin/next .
+docker build --build-arg host=http://localhost:3000 -t  slavapavlutin/next .

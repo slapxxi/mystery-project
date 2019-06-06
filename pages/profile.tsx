@@ -5,18 +5,18 @@ import { Page } from '@self/lib/types';
 
 interface Props extends Page.Props {}
 
-function SettingsPage(props: Props) {
+function ProfilePage(props: Props) {
   let { t } = props;
 
   return (
     <div>
-      <h1>{t('settings')}</h1>
+      <h1>{t('profile')}</h1>
     </div>
   );
 }
 
-SettingsPage.getInitialProps = async () => {
+ProfilePage.getInitialProps = async () => {
   return { namespacesRequired: ['common', 'header'] };
 };
 
-export default withNamespaces('common')(SettingsPage);
+export default withNamespaces('common')(ProfilePage);

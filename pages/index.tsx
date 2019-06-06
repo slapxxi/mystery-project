@@ -2,10 +2,13 @@
 import { css, jsx } from '@emotion/core';
 import Image from '@self/components/Image';
 import { withNamespaces } from '@self/i18n';
+import { Page } from '@self/lib/types';
 
 const URL = '/static/img/camping.jpg';
 
-function IndexPage(props) {
+interface Props extends Page.Props {}
+
+function IndexPage(props: Props) {
   let { t } = props;
 
   return (

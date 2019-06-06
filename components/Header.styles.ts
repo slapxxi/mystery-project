@@ -1,4 +1,5 @@
 import { css } from '@emotion/core';
+import { App } from '@self/lib/types';
 import mediaQueries from '@self/styles/mediaQueries';
 
 export default {
@@ -36,17 +37,35 @@ export default {
     }
   `,
 
-  link: css`
+  link: (theme: App.Theme) => css`
+    position: relative;
     text-decoration: none;
 
     :link,
     :visited {
-      color: slategrey;
+      color: ${theme.colors.textLight};
     }
 
     :hover,
     :active {
-      color: black;
+      color: ${theme.colors.textEm};
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      height: 2px;
+      top: 100%;
+      top: calc(100% + 0.3rem);
+      left: -1px;
+      right: -1px;
+      background: ${theme.colors.textEm};
+      transform: scaleX(0);
+      transition: transform 0.25s ease-out;
+    }
+
+    &.active::after {
+      transform: scaleX(1);
     }
   `,
 };

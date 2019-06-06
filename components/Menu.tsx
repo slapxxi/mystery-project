@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { Global, jsx } from '@emotion/core';
+import { Page } from '@self/lib/types';
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -8,7 +9,7 @@ import CloseIcon from './icons/CloseIcon';
 import Link from './Link';
 import styles from './Menu.styles';
 
-interface Props extends I18nProps {}
+interface Props extends Page.Props {}
 
 function Menu(props: Props) {
   let { t } = props;
@@ -39,7 +40,7 @@ function Menu(props: Props) {
 }
 
 function Navigation(props) {
-  let { open, t, onClose } = props;
+  let { open, onClose, t } = props;
 
   if (!process.browser) {
     return null;

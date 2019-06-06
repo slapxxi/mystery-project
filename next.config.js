@@ -27,6 +27,10 @@ const baseConfig = {
     },
   },
 
+  env: {
+    HOST: process.env.HOST,
+  },
+
   publicRuntimeConfig: {
     firebase: {
       apiKey: process.env.FIREBASE_API_KEY,

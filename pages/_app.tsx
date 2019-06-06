@@ -1,15 +1,28 @@
 import AppContainer from '@self/components/AppContainer';
 import { appWithTranslation } from '@self/i18n';
-import App, { Container as NextContainer, NextAppContext } from 'next/app';
+import { App as IApp } from '@self/lib/types';
+import App, { Container as NextContainer } from 'next/app';
 import React from 'react';
 
 class MyApp extends App {
-  static async getInitialProps(context: NextAppContext) {
+  static async getInitialProps(context: IApp.Context) {
     let { Component, ctx } = context;
-    let pageProps = {};
+    let { req } = ctx;
+    let pageProps: IApp.Props = { user: null };
+
+    if (req) {
+      let { session } = req;
+
+      if (session && session.decodedToken) {
+        pageProps = { ...pageProps, user: session.decodedToken };
+      }
+    }
 
     if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
+      pageProps = {
+        ...pageProps,
+        ...(await Component.getInitialProps(ctx)),
+      };
     }
 
     return { pageProps };
@@ -20,7 +33,7 @@ class MyApp extends App {
 
     return (
       <NextContainer>
-        <AppContainer>
+        <AppContainer user={pageProps.user}>
           <Component {...pageProps} />
         </AppContainer>
       </NextContainer>

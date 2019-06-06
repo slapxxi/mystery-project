@@ -93,3 +93,6 @@ dist/
 
 # Bundles
 bundles/
+
+# Config
+service-account.json

@@ -1,1 +1,7 @@
-{ "index": "Main", "settings": "Settings", "login": "Sign In" }
+{
+  "index": "Main",
+  "settings": "Settings",
+  "login": "Sign In",
+  "feed": "Feed",
+  "profile": "Profile"
+}

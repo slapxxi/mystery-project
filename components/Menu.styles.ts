@@ -38,7 +38,7 @@ export default {
     width: 100%;
     color: white;
     transform: translateY(-100%);
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.25s ease-in-out;
 
     &.active {
       transform: translateY(0);
