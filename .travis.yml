@@ -11,11 +11,6 @@ services:
   - docker
 
 install:
-  - npm config set package-lock false
-  - npm install
+  - yarn install
 
-script: npm test
-
-after_success:
-  - sh .travis/deploy_dockerhub.sh
-  - test "$TRAVIS_BRANCH" = "master" && sh .travis/deploy_heroku.sh
+script: yarn run test

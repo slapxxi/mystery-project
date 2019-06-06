@@ -2,8 +2,8 @@ FROM node:12.4.0-alpine as build
 
 WORKDIR /usr/src/app
 
-COPY package.json ./
-RUN npm install --only=production
+COPY package.json yarn.lock ./
+RUN yarn install --production=true
 
 ARG host=https://lit-hollows-93528.herokuapp.com
 
@@ -23,10 +23,10 @@ ENV NODE_ENV=production
 
 COPY --from=build /usr/src/app/.next/ ./.next/
 COPY server.js i18n.js server/package.json server/next.config.js \
-  service-account.json ./
+  service-account.json server/yarn.lock ./
 COPY static/ ./static/
 
-RUN npm install
+RUN yarn install
 
 RUN adduser -D myuser
 USER myuser

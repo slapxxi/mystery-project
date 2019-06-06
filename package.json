@@ -14,14 +14,14 @@
     "test": "jest",
     "image": "./bin/generate_low_quality_image",
     "lint-staged": "lint-staged",
-    "docker": "npm run docker:build && npm run docker:run",
+    "docker": "yarn run docker:build && yarn run docker:run",
     "docker:build": "./bin/docker_build",
     "docker:run": "./bin/docker_run",
     "docker:attach": "docker exec -it server /bin/sh -c \"[ -e /bin/bash ] && /bin/bash || /bin/sh\"",
     "docker:stop": "docker container stop server",
     "docker:deploy": "env-cmd ./bin/docker_deploy",
-    "analyze:server": "BUNDLE_ANALYZE=server npm run build",
-    "analyze:browser": "BUNDLE_ANALYZE=browser npm run build"
+    "analyze:server": "BUNDLE_ANALYZE=server yarn run build",
+    "analyze:browser": "BUNDLE_ANALYZE=browser yarn run build"
   },
   "keywords": [
     "react",
