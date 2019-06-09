@@ -1,19 +1,23 @@
-import { Server } from '@self/lib/types';
+import { AuthUser } from '@self/lib/types';
 import fetch from 'isomorphic-unfetch';
 
 const HOST = process.env.HOST;
 
-async function auth(user: firebase.User) {
+async function auth(user: firebase.User): Promise<AuthUser> {
   let token = await user.getIdToken();
 
   let response = await fetch(`${HOST}/api/login`, {
-    method: 'post',
+    method: 'POST',
     credentials: 'same-origin',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ token }),
   });
 
-  let body: Server.AuthResponse = await response.json();
+  let body = await response.json();
+
+  if (body.error) {
+    throw new Error(body.error.message);
+  }
 
   return body.decodedToken;
 }

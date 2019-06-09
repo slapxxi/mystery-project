@@ -1,6 +1,6 @@
-import { Page } from "./types";
+import { PageContext } from './types';
 
-function isServer(context: Page.Context) {
+function isServer(context: PageContext) {
   return !!context.req;
 }
 

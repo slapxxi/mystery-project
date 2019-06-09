@@ -1,6 +1,6 @@
-import { Page } from './types';
+import { PageContext } from './types';
 
-function userAuthenticated(context: Page.Context) {
+function userAuthenticated(context: PageContext) {
   return context.req && context.req.session && context.req.session.decodedToken;
 }
 

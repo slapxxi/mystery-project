@@ -30,10 +30,10 @@ export default {
   `,
 
   logo: css`
-    width: 38px;
+    width: 22px;
 
     @media ${mediaQueries.tablet} {
-      width: 48px;
+      width: 24px;
     }
   `,
 

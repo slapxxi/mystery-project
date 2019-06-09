@@ -1,6 +1,6 @@
-import { Page } from './types';
+import { PageContext } from './types';
 
-function redirectTo(context: Page.Context, path: string) {
+function redirectTo(context: PageContext, path: string) {
   context.res!.writeHead(302, { Location: path });
   context.res!.end();
 }

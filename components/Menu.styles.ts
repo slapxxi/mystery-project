@@ -1,6 +1,7 @@
 import { css } from '@emotion/core';
+import { AppTheme } from '@self/lib/types';
 
-let button = (theme: Theme) => css`
+let button = (theme: AppTheme) => css`
   border: 0;
   padding: 0;
   background: transparent;
@@ -27,12 +28,12 @@ export default {
     line-height: 0;
   `,
 
-  nav: css`
+  nav: (theme: AppTheme) => css`
     box-sizing: border-box;
     overflow: scroll;
     position: fixed;
     padding: calc(0.5rem + 12px) 0.5rem;
-    background-color: #c22a30;
+    background-color: ${theme.colors.textEm};
     top: 0;
     height: 100vh;
     width: 100%;
@@ -70,7 +71,7 @@ export default {
     }
   `,
 
-  menuButton: (theme: Theme) => css`
+  menuButton: (theme: AppTheme) => css`
     ${button(theme)}
     fill: white;
   `,

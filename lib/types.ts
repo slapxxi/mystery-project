@@ -12,20 +12,56 @@ export interface PayloadAction<Type, Payload> {
   payload: Payload;
 }
 
+export interface AppTheme {
+  type: 'dark' | 'light';
+  colors: {
+    textLight: string;
+    textEm: string;
+  };
+  sizes: {};
+  fonts: {};
+}
+
+export interface PageContext extends NextContext {
+  req?: ServerRequest;
+}
+
+export interface PageProps {
+  t: (key: string) => string;
+  user: Maybe<AuthUser>;
+}
+
+export interface AuthUser {
+  uid: string;
+  picture: string;
+}
+
+export interface AuthState {
+  user: Maybe<AuthUser>;
+  status: 'pending' | 'active' | 'anonymous' | 'signout';
+}
+
+export type AuthAction =
+  | PayloadAction<'SIGN_IN', AuthUser>
+  | PlainAction<'SIGN_OUT'>
+  | PlainAction<'ERROR'>
+  | PlainAction<'REQUEST_SIGN_IN'>
+  | PlainAction<'REQUEST_SIGN_OUT'>;
+
+export interface ServerRequest extends http.IncomingMessage {
+  firebaseServer: admin.app.App;
+  locale: 'en' | 'ru';
+  session?: ServerSession;
+}
+
+export interface ServerSession {
+  decodedToken?: Auth.User;
+}
+
 export namespace App {
   export interface Props {
     user: Maybe<Auth.User>;
     [key: string]: any;
-  }
-
-  export interface Theme {
-    type: 'dark' | 'light';
-    colors: {
-      textLight: string;
-      textEm: string;
-    };
-    sizes: {};
-    fonts: {};
   }
 
   export interface Context extends NextAppContext {
@@ -36,14 +72,14 @@ export namespace App {
 export namespace Server {
   export interface Session {
     decodedToken?: Auth.User;
+    error?: Error;
   }
 
   export interface Response extends http.ServerResponse {}
 
-  export interface AuthResponse {
-    status: boolean;
-    decodedToken: Auth.User;
-  }
+  export type AuthResponse =
+    | { status: boolean; decodedToken: AuthUser }
+    | { error: Error };
 
   export interface Request extends http.IncomingMessage {
     firebaseServer: admin.app.App;
@@ -71,6 +107,11 @@ export namespace Auth {
 
   export interface Props {
     user: Maybe<User>;
+  }
+
+  export interface Context {
+    state: State;
+    dispatch: (action: AuthAction) => void;
   }
 
   export interface State {
