@@ -1,12 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { withNamespaces } from '@self/i18n';
+import { Router, withNamespaces } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import isServer from '@self/lib/isServer';
 import redirectTo from '@self/lib/redirectTo';
 import { PageContext, PageProps } from '@self/lib/types';
-import userAuthenticated from '@self/lib/userAuthenticated';
-import Router from 'next/router';
+import userAuthenticated from '@self/lib/universal/userAuthenticated';
 
 interface Props extends PageProps {}
 
@@ -31,7 +30,7 @@ function ProfilePage(props: Props) {
 }
 
 ProfilePage.getInitialProps = async (context: PageContext) => {
-  if (isServer(context) && !userAuthenticated(context)) {
+  if (isServer(context) && !userAuthenticated(context.req)) {
     redirectTo(context, '/');
   }
 

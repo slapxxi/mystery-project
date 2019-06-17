@@ -67,8 +67,8 @@ module.exports = {
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    '^.+\\.svg$': 'jest-svg-transformer',
-    '.+\\.(css|styl|less|sass|scss)$': 'identity-obj-proxy',
+    // '^.+\\.svg$': 'jest-svg-transformer',
+    // '.+\\.(css|styl|less|sass|scss)$': 'identity-obj-proxy',
     '^@self/(.*)$': '<rootDir>/$1',
   },
 
@@ -82,10 +82,15 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: null,
+  preset: 'jest-puppeteer',
 
   // Run tests from one or more projects
-  // projects: null,
+  // projects: [
+  //   {
+  //     displayName: 'server',
+  //     testMatch: ['<rootDir>/server/**/?(*.)+(spec|test).[tj]s?(x)'],
+  //   },
+  // ],
 
   // Use this configuration option to add custom reporters to Jest
   // reporters: undefined,
@@ -132,23 +137,20 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  // testMatch: [
-  //   "**/__tests__/**/*.[jt]s?(x)",
-  //   "**/?(*.)+(spec|test).[tj]s?(x)"
-  // ],
+  testMatch: [
+    '<rootDir>/server/**/__tests__/**/*.[jt]s?(x)',
+    '<rootDir>/server/**/?(*.)+(spec|test).[tj]s?(x)',
+  ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/.cache/',
     '<rootDir>/.next/',
-    // Server folder provides its own tests that require separate configuration
-    '<rootDir>/server/',
-    '<rootDir>/build/',
   ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
-  testRegex: ['(/__tests__/.*|(\\.|/)(test|spec))\\.([tj]sx?)$'],
+  // testRegex: ['(/__tests__/.*|(\\.|/)(test|spec))\\.([tj]sx?)$'],
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: null,

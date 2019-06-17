@@ -1,7 +1,11 @@
 {
-  "index": "Main",
-  "settings": "Settings",
-  "login": "Sign In",
   "feed": "Feed",
-  "profile": "Profile"
+  "index": "Main",
+  "language-en": "English",
+  "language-ru": "Russian",
+  "language": "Language",
+  "login": "Sign In",
+  "profile": "Profile",
+  "settings": "Settings",
+  "sign in with github": "Sign In with GitHub"
 }

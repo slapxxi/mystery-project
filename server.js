@@ -7,9 +7,11 @@ const firebaseAdmin = require('firebase-admin');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const cacheableResponse = require('cacheable-response');
 const nexti18next = require('./i18n');
 
-let dev = process.env.NODE_ENV !== 'production';
+let env = process.env.NODE_ENV;
+let dev = env !== 'production';
 let port = parseInt(process.env.PORT, 10) || 3000;
 
 let app = next({ dev });
@@ -25,7 +27,20 @@ let firebase = firebaseAdmin.initializeApp(
   'server'
 );
 
-app.prepare().then(() => {
+let ssrCache = cacheableResponse({
+  ttl: 1000 * 60 * 60,
+  get: async ({ req, res, pagePath, queryParams }) => {
+    return {
+      data: await app.renderToHTML(req, res, pagePath, queryParams),
+    };
+  },
+  send: ({ data, res, req }) => {
+    console.log(data);
+    res.send(data);
+  },
+});
+
+let serverPromise = app.prepare().then(() => {
   let server = express();
 
   if (!dev) {
@@ -53,6 +68,13 @@ app.prepare().then(() => {
     next();
   });
 
+  server.use((req, res, next) => {
+    if (req.session) {
+      console.log(req.session.decodedToken);
+    }
+    next();
+  });
+
   server.post('/api/login', async (req, res) => {
     try {
       if (!req.body) {
@@ -60,6 +82,7 @@ app.prepare().then(() => {
       }
 
       let token = req.body.token;
+      console.log('token', token);
       let decodedToken = await firebase.auth().verifyIdToken(token);
 
       req.session.decodedToken = decodedToken;
@@ -74,11 +97,22 @@ app.prepare().then(() => {
     res.json({ status: true });
   });
 
+  server.get('/', (req, res) => {
+    if (req.session.decodedToken) {
+      return ssrCache({ req, res, pagePath: '/', queryParams: { force: true } });
+    }
+    return handle(req, res, '/');
+  });
+
   server.get('*', (req, res) => {
     return handle(req, res);
   });
 
-  server.listen(port, (err) => {
+  if (env === 'test') {
+    return server;
+  }
+
+  return server.listen(port, (err) => {
     if (err) throw err;
     console.log(`> Ready on http://localhost:${port}`);
   });
@@ -91,6 +125,4 @@ function ServiceWorker(app) {
   };
 }
 
-async function fetch(url) {
-  return url;
-}
+module.exports = serverPromise;

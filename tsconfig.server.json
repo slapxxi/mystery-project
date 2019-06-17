@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "esnext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "outDir": "build",
+    "sourceMap": true,
+    "allowJs": true
+  },
+  "include": ["server/**/*"]
+}

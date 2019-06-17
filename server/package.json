@@ -4,12 +4,13 @@
   "description": "Next.js Custom Server",
   "main": "server.js",
   "scripts": {
-    "start": "NODE_ENV=production node server.js"
+    "start": "NODE_ENV=production node build/server/server.js"
   },
   "license": "MIT",
   "dependencies": {
     "@emotion/core": "^10.0.10",
     "body-parser": "^1.19.0",
+    "cacheable-response": "1.6.6",
     "compression": "^1.7.4",
     "emotion-theming": "^10.0.10",
     "express": "^4.17.1",

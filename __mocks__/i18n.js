@@ -1,5 +1,5 @@
-module.exports = {
-  withNamespaces(_) {
-    return (Component) => Component;
-  },
-};
+function withNamespaces(_) {
+  return (Component) => Component;
+}
+
+export { withNamespaces };

@@ -4,11 +4,12 @@ declare module '*.module.css' {
 }
 
 declare module '*.svg' {
-  export default 'image';
+  let content: string;
+  export default content;
 }
 
 declare module NodeJS {
-  interface Process {
+  export interface Process {
     browser: boolean;
   }
 }

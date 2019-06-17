@@ -1,0 +1,5 @@
+{
+  "watch": ["server/server.ts"],
+  "verbose": true,
+  "exec": "yarn run dev:debug"
+}

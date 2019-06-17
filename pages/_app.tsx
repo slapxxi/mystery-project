@@ -1,14 +1,14 @@
 import AppContainer from '@self/components/AppContainer';
 import { appWithTranslation } from '@self/i18n';
-import { App as IApp } from '@self/lib/types';
+import { AppContext, AppProps } from '@self/lib/types';
 import App, { Container as NextContainer } from 'next/app';
 import React from 'react';
 
 class MyApp extends App {
-  static async getInitialProps(context: IApp.Context) {
+  static async getInitialProps(context: AppContext) {
     let { Component, ctx } = context;
     let { req } = ctx;
-    let pageProps: IApp.Props = { user: null };
+    let pageProps: AppProps = { user: null };
 
     if (req) {
       let { session } = req;

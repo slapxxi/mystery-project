@@ -1,11 +1,11 @@
 import useToast from '@self/lib/hooks/useToast';
 import signInWithPopup from '@self/lib/services/signInWithPopup';
 import signOut from '@self/lib/services/signOut';
-import { Auth, AuthAction, AuthState, AuthUser, Maybe } from '@self/lib/types';
+import { AuthAction, AuthContext, AuthState, AuthUser, Maybe } from '@self/lib/types';
 import 'firebase/auth';
 import { createContext, ReactNode, useEffect, useReducer } from 'react';
 
-let context = createContext({} as Auth.Context);
+let context = createContext({} as AuthContext);
 let { Provider, Consumer } = context;
 
 interface Props {
@@ -14,8 +14,8 @@ interface Props {
 }
 
 function AuthProvider(props: Props) {
-  let { user, children } = props;
   let toast = useToast();
+  let { user, children } = props;
   let [state, dispatch] = useReducer(authReducer, {
     user,
     status: user ? 'active' : 'anonymous',

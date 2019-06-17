@@ -5,14 +5,14 @@ import Link from '@self/components/Link';
 import { withNamespaces } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import useMediaQuery from '@self/lib/hooks/useMediaQuery';
-import { Page } from '@self/lib/types';
+import { PageProps } from '@self/lib/types';
 import mediaQueries from '@self/styles/mediaQueries';
 import Avatar from './Avatar';
 import styles from './Header.styles';
 import Logo from './Logo';
 import Menu from './Menu';
 
-interface Props extends Page.Props {}
+interface Props extends PageProps {}
 
 function Header(props: Props) {
   let { t } = props;

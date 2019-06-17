@@ -96,3 +96,6 @@ bundles/
 
 # Config
 service-account.json
+
+# Build
+build/

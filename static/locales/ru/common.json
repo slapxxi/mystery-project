@@ -1,7 +1,11 @@
 {
-  "index": "Главная",
-  "settings": "Настройки",
-  "login": "Авторизация",
   "feed": "Лента",
-  "profile": "Личный Профиль"
+  "index": "Главная",
+  "language-en": "Английский",
+  "language-ru": "Русский",
+  "language": "Язык",
+  "login": "Авторизация",
+  "profile": "Личный Профиль",
+  "settings": "Настройки",
+  "sign in with github": "Войти через GitHub"
 }

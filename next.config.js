@@ -1,7 +1,5 @@
 const path = require('path');
 const dotenv = require('dotenv');
-const pipe = require('pipeline.macro');
-
 const withTypescript = require('@zeit/next-typescript');
 const withCSS = require('@zeit/next-css');
 const withTranspileModules = require('next-transpile-modules');

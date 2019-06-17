@@ -2,11 +2,11 @@
 import { css, jsx } from '@emotion/core';
 import Image from '@self/components/Image';
 import { withNamespaces } from '@self/i18n';
-import { Page } from '@self/lib/types';
+import { PageProps } from '@self/lib/types';
 
 const URL = '/static/img/camping.jpg';
 
-interface Props extends Page.Props {}
+interface Props extends PageProps {}
 
 function IndexPage(props: Props) {
   let { t } = props;
@@ -28,4 +28,5 @@ IndexPage.getInitialProps = async () => {
   return { namespacesRequired: ['common', 'header'] };
 };
 
+export { IndexPage };
 export default withNamespaces('common')(IndexPage);
