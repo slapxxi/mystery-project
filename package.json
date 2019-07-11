@@ -55,7 +55,7 @@
     "firebase": "^6.0.3",
     "firebase-admin": "^8.0.0",
     "isomorphic-unfetch": "^3.0.0",
-    "lodash-es": "^4.17.11",
+    "lodash-es": "^4.17.14",
     "next": "^8.1.0",
     "next-i18next": "^0.40.1",
     "next-offline": "^4.0.1",
