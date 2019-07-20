@@ -1,5 +1,6 @@
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, Global, jsx } from '@emotion/core';
+import { AppTheme } from '@self/lib/types';
 import '@self/styles/layout.css';
 import { ComponentProps } from 'react';
 import Header from './Header';
@@ -11,11 +12,19 @@ function Layout(props: Props) {
 
   return (
     <div
-      css={css`
+      css={(theme: AppTheme) => css`
         max-width: 960px;
         margin: 0 auto;
+        background: ${theme.colors.bg};
       `}
     >
+      <Global
+        styles={(theme: AppTheme) => css`
+          html {
+            background: ${theme.colors.bg};
+          }
+        `}
+      ></Global>
       <Header />
       <main>{children}</main>
       <footer>

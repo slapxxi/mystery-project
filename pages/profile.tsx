@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Router, withNamespaces } from '@self/i18n';
+import { Router, withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import isServer from '@self/lib/isServer';
 import redirectTo from '@self/lib/redirectTo';
@@ -37,4 +37,4 @@ ProfilePage.getInitialProps = async (context: PageContext) => {
   return { namespacesRequired: ['common', 'header'] };
 };
 
-export default withNamespaces('common')(ProfilePage);
+export default withTranslation('common')(ProfilePage);

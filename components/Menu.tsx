@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { Global, jsx } from '@emotion/core';
-import { PageProps } from '@self/lib/types';
+import { AuthUser, Maybe } from '@self/lib/types';
+import { TFunction } from 'next-i18next';
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -9,7 +10,10 @@ import CloseIcon from './icons/CloseIcon';
 import Link from './Link';
 import styles from './Menu.styles';
 
-interface Props extends PageProps {}
+interface Props {
+  t: TFunction;
+  user: Maybe<AuthUser>;
+}
 
 function Menu(props: Props) {
   let { t } = props;
@@ -39,7 +43,7 @@ function Menu(props: Props) {
   );
 }
 
-function Navigation(props) {
+function Navigation(props: any) {
   let { open, onClose, t } = props;
 
   if (!process.browser) {
@@ -64,6 +68,11 @@ function Navigation(props) {
         <li>
           <Link href="/">
             <a>{t('index')}</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/feed">
+            <a>{t('feed')}</a>
           </Link>
         </li>
         <li>

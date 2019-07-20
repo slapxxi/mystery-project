@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import Image from '@self/components/Image';
-import { withNamespaces } from '@self/i18n';
+import { withTranslation } from '@self/i18n';
 import { PageProps } from '@self/lib/types';
 
 const URL = '/static/img/camping.jpg';
@@ -29,4 +29,4 @@ IndexPage.getInitialProps = async () => {
 };
 
 export { IndexPage };
-export default withNamespaces('common')(IndexPage);
+export default withTranslation('common')(IndexPage);

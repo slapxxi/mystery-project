@@ -9,9 +9,9 @@ declare namespace Express {
 declare module 'cacheable-response' {
   export interface Configuration {
     ttl: number;
-    getKey?: (params: any) => void;
     get: (params: any) => void;
     send: (params: any) => void;
+    getKey?: (params: any) => void;
   }
 
   export default function(config: Configuration): Express.RequestHandler;

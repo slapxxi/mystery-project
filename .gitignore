@@ -99,3 +99,6 @@ service-account.json
 
 # Build
 build/
+
+# CouchDB/PouchDB
+*.ldb

@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { ComponentProps } from 'react';
+// for url parsing available universally
 import Url from 'url-parse';
 import styles from './Image.styles';
 
@@ -31,10 +32,14 @@ function Source(props: { type: ImageType; src: string }) {
   return (
     <source
       data-testid={`source-${type}`}
-      type={`image/${type === 'jpg' ? 'jpeg' : type}`}
+      type={getMimeType(type)}
       srcSet={generateSrcSet(type, src)}
     />
   );
+}
+
+function getMimeType(type: ImageType) {
+  return `image/${type === 'jpg' ? 'jpeg' : type}`;
 }
 
 function generateSrcSet(imageType: ImageType, src: string) {

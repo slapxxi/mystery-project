@@ -1,15 +1,23 @@
 import { AppTheme } from '@self/lib/types';
 
-let defaultTheme: AppTheme = {
+const defaultTheme: AppTheme = {
   type: 'light',
-  colors: { textLight: 'hsl(230, 10%, 30%)', textEm: 'hsl(219, 100%, 53%)' },
+  colors: {
+    textLight: 'hsl(230, 10%, 30%)',
+    textEm: 'hsl(1, 100%, 70%)',
+    bg: 'hsl(1, 10%, 99%)',
+  },
   sizes: {},
   fonts: {},
 };
 
-let darkTheme: AppTheme = {
+const darkTheme: AppTheme = {
   type: 'dark',
-  colors: { textLight: 'hsl(230, 30%, 30%)' },
+  colors: {
+    textLight: 'hsl(1, 10%, 30%)',
+    textEm: 'hsl(1, 100%, 70%)',
+    bg: 'hsl(1, 1%, 20%)',
+  },
   sizes: {},
   fonts: {},
 };

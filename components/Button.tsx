@@ -1,7 +1,9 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
-function Button(props) {
+interface Props extends React.ComponentProps<'button'> {}
+
+function Button(props: Props) {
   return (
     <button
       css={css`

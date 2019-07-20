@@ -139,12 +139,13 @@ module.exports = {
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
-    '<rootDir>/node_modules/',
     '<rootDir>/.cache/',
     '<rootDir>/.next/',
+    '<rootDir>/build/',
+    '<rootDir>/node_modules/',
+    '<rootDir>/pages/',
     // Server folder provides its own tests that require separate configuration
     '<rootDir>/server/',
-    '<rootDir>/build/',
   ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
@@ -164,7 +165,7 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '^.+\\.tsx?$': 'babel-jest',
+    '^.+\\.[t|j]sx?$': 'babel-jest',
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

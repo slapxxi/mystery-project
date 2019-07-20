@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { withNamespaces } from '@self/i18n';
+import { withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import useToast from '@self/lib/hooks/useToast';
 import { PageProps } from '@self/lib/types';
@@ -40,4 +40,4 @@ FeedPage.getInitialProps = async () => {
   return { namespacesRequired: ['common', 'header'] };
 };
 
-export default withNamespaces('common')(FeedPage);
+export default withTranslation('common')(FeedPage);

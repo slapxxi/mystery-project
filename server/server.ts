@@ -1,5 +1,5 @@
 import bodyParser from 'body-parser';
-import cacheableResponse from 'cacheable-response';
+// import cacheableResponse from 'cacheable-response';
 import compression from 'compression';
 import express from 'express';
 import session from 'express-session';
@@ -9,8 +9,7 @@ import next from 'next';
 import nextI18NextMiddleware from 'next-i18next/middleware';
 import path from 'path';
 import nexti18next from '../i18n';
-import generateCacheKey from '../lib/server/generateCacheKey';
-import userAuthenticated from '../lib/universal/userAuthenticated';
+// import generateCacheKey from '../lib/server/generateCacheKey';
 
 const FileStore = require('session-file-store')(session);
 
@@ -32,7 +31,7 @@ let routes = {
   },
   serviceWorker: '/service-worker.js',
   all: '*',
-};
+} as const;
 
 let firebase = firebaseAdmin.initializeApp(
   {
@@ -44,20 +43,20 @@ let firebase = firebaseAdmin.initializeApp(
   'server'
 );
 
-let ssrCache = cacheableResponse({
-  ttl: 1000 * 60 * 60,
-  getKey: generateCacheKey,
-  get: async (params) => {
-    let { req, res, pagePath, queryParams } = params;
-    return {
-      data: await app.renderToHTML(req, res, pagePath, queryParams),
-    };
-  },
-  send: (params) => {
-    let { data, res } = params;
-    res.send(data);
-  },
-});
+// let ssrCache = cacheableResponse({
+//   ttl: 1000 * 60 * 60,
+//   getKey: generateCacheKey,
+//   get: async (params) => {
+//     let { req, res, pagePath, queryParams } = params;
+//     return {
+//       data: await app.renderToHTML(req, res, pagePath, queryParams),
+//     };
+//   },
+//   send: (params) => {
+//     let { data, res } = params;
+//     res.send(data);
+//   },
+// });
 
 app.prepare().then(() => {
   let server = express();
@@ -78,14 +77,14 @@ app.prepare().then(() => {
 
   server.use(bodyParser.json());
 
-  server.get('/service-worker.js', ServiceWorker(app));
-
-  server.use(nextI18NextMiddleware(nexti18next));
-
   server.use((req, _, next) => {
     req.firebaseServer = firebase;
     next();
   });
+
+  server.use(nextI18NextMiddleware(nexti18next));
+
+  server.get(routes.serviceWorker, serviceWorkerHandler(app));
 
   server.post(routes.api.login, async (req, res) => {
     try {
@@ -110,20 +109,6 @@ app.prepare().then(() => {
     res.json({ status: true });
   });
 
-  server.get(routes.index, (req, res) => {
-    if (!userAuthenticated(req)) {
-      return ssrCache({ req, res, pagePath: routes.index });
-    }
-    return handle(req, res);
-  });
-
-  server.get(routes.settings, (req, res) => {
-    if (!userAuthenticated(req)) {
-      return ssrCache({ req, res, pagePath: routes.settings });
-    }
-    return handle(req, res);
-  });
-
   server.get(routes.all, (req, res) => {
     return handle(req, res);
   });
@@ -138,9 +123,12 @@ app.prepare().then(() => {
   });
 });
 
-function ServiceWorker(app: next.Server) {
+/**
+ * Creates service worker handler function with fixed path
+ */
+function serviceWorkerHandler(app: any) {
   return (req: http.IncomingMessage, res: http.ServerResponse) => {
-    let filePath = path.join(rootDir, '.next', 'static', 'service-worker.js');
+    let filePath = path.join(rootDir, '.next', 'service-worker.js');
     app.serveStatic(req, res, filePath);
   };
 }

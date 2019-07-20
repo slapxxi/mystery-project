@@ -2,7 +2,7 @@
 import { css, jsx } from '@emotion/core';
 import ActiveLink from '@self/components/ActiveLink';
 import Link from '@self/components/Link';
-import { withNamespaces } from '@self/i18n';
+import { withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import useMediaQuery from '@self/lib/hooks/useMediaQuery';
 import { PageProps } from '@self/lib/types';
@@ -32,7 +32,7 @@ function Header(props: Props) {
             <Avatar user={auth.user} />
           ) : (
             <ActiveLink href="/login" passHref>
-              <a css={styles.link}>{t('login')}</a>
+              <a css={styles.signinLink}>{t('login')}</a>
             </ActiveLink>
           )}
         </li>
@@ -57,6 +57,11 @@ function Header(props: Props) {
           {matches ? (
             <ul css={styles.menu}>
               <li>
+                <ActiveLink href="/test" passHref activeClassName="active">
+                  <a css={styles.link}>Test</a>
+                </ActiveLink>
+              </li>
+              <li>
                 <ActiveLink href="/feed" passHref prefetch activeClassName="active">
                   <a css={styles.link}>{t('feed')}</a>
                 </ActiveLink>
@@ -76,4 +81,4 @@ function Header(props: Props) {
   );
 }
 
-export default withNamespaces('header')(Header);
+export default withTranslation('header')(Header);

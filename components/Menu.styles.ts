@@ -1,7 +1,7 @@
 import { css } from '@emotion/core';
 import { AppTheme } from '@self/lib/types';
 
-let button = (theme: AppTheme) => css`
+const button = (theme: AppTheme) => css`
   border: 0;
   padding: 0;
   background: transparent;

@@ -6,31 +6,19 @@ module.exports = {
           'next/babel',
           {
             'preset-env': {
+              debug: true,
+              modules: false,
               targets: 'last 1 Chrome version',
             },
-          },
-        ],
-        '@zeit/next-typescript/babel',
-      ],
-    },
-    production: {
-      presets: [
-        [
-          'next/babel',
-          {
-            'preset-env': {
-              targets: {
-                chrome: '65',
-                safari: '11.1',
-                firefox: '60',
-                edge: '17',
-              },
+            'transform-runtime': {
+              corejs: false,
             },
           },
         ],
-        '@zeit/next-typescript/babel',
       ],
+      plugins: ['babel-plugin-macros'],
     },
+
     test: {
       presets: [
         [
@@ -43,10 +31,60 @@ module.exports = {
             },
           },
         ],
-        '@zeit/next-typescript/babel',
       ],
     },
   },
 
-  plugins: ['babel-plugin-macros'],
+  // env: {
+  //   development: {
+  //     presets: [
+  //       [
+  //         [
+  //           'next/babel',
+  //           {
+  //             modules: false,
+  //           },
+  //         ],
+  //         {
+  //           'preset-env': {
+  //             targets: 'last 1 Chrome version',
+  //             useBuiltIns: false,
+  //           },
+  //         },
+  //       ],
+  //     ],
+  //   },
+  //   production: {
+  //     presets: [
+  //       [
+  //         'next/babel',
+  //         {
+  //           'preset-env': {
+  //             targets: {
+  //               chrome: '65',
+  //               safari: '11.1',
+  //               firefox: '60',
+  //               edge: '17',
+  //             },
+  //           },
+  //         },
+  //       ],
+  //     ],
+  //   },
+  //   test: {
+  //     presets: [
+  //       [
+  //         'next/babel',
+  //         {
+  //           'preset-env': {
+  //             targets: {
+  //               node: 'current',
+  //             },
+  //           },
+  //         },
+  //       ],
+  //     ],
+  //   },
+  // },
+  // plugins: ['babel-plugin-macros'],
 };

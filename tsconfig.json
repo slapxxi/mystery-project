@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
+    "alwaysStrict": true,
+    "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
-    "lib": ["dom", "es2017"],
+    "lib": ["dom", "es2017", "webworker"],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -18,7 +20,23 @@
     "target": "esnext",
     "paths": {
       "@self/*": ["./*"]
-    }
+    },
+    "forceConsistentCasingInFileNames": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
-  "exclude": ["node_modules", "dist", ".next", "build", "next.config.js"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".next",
+    "build",
+    "next.config.js",
+    "server/node_modules"
+  ]
+  // "include": [
+  //   "next-env.d.ts",
+  //   "**/*.ts",
+  //   "**/*.tsx"
+  // ]
 }

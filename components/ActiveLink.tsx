@@ -1,10 +1,12 @@
-import { LinkProps } from 'next/link';
-import { withRouter, WithRouterProps } from 'next/router';
-import { Children, cloneElement } from 'react';
+import { WithRouterProps } from 'next-server/router';
+import { LinkProps } from 'next/dist/client/link';
+import { withRouter } from 'next/router';
+import { Children, cloneElement, ReactElement } from 'react';
 import Link from './Link';
 
 interface Props extends LinkProps, WithRouterProps {
   activeClassName?: string;
+  children: ReactElement;
 }
 
 function ActiveLink(props: Props) {
@@ -17,4 +19,6 @@ function ActiveLink(props: Props) {
 
   return <Link {...rest}>{children}</Link>;
 }
+
+// @ts-ignore
 export default withRouter(ActiveLink);

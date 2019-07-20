@@ -12,7 +12,7 @@ import uuid from 'uuid';
 import Button from './Button';
 import CloseIcon from './icons/CloseIcon';
 
-interface ToastConfig {
+export interface ToastConfig {
   message: string;
   content?: string;
   timeout?: number;
@@ -35,7 +35,7 @@ let toastContext = createContext({} as Context);
 let { Provider } = toastContext;
 
 function ToastProvider(props: Props) {
-  let timers = useRef([]);
+  let timers = useRef<NodeJS.Timeout[]>([]);
   let { children } = props;
   let [toasts, setToasts] = useState<ToastInternal[]>([]);
 
@@ -54,7 +54,7 @@ function ToastProvider(props: Props) {
   }, []);
 
   useEffect(() => {
-    timers.current.forEach((timer) => {
+    timers.current.forEach((timer: NodeJS.Timeout) => {
       clearTimeout(timer);
     });
   }, []);
@@ -156,6 +156,6 @@ function ToastItem(props: {
   );
 }
 
-export { toastContext, ToastConfig };
+export { toastContext };
 
 export default ToastProvider;

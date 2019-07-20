@@ -1,12 +1,11 @@
 const path = require('path');
 const dotenv = require('dotenv');
-const withTypescript = require('@zeit/next-typescript');
+
 const withCSS = require('@zeit/next-css');
 const withTranspileModules = require('next-transpile-modules');
 const withBundleAnalyzer = require('@zeit/next-bundle-analyzer');
-const withOffline = require('next-offline');
 
-let activeEnv = process.env.NODE_ENV;
+const ServiceWorkerPlugin = require('serviceworker-webpack-plugin');
 
 dotenv.config();
 
@@ -52,49 +51,29 @@ const baseConfig = {
 
   transpileModules: ['lodash-es'],
 
-  // generateInDevMode: true,
-
-  workboxOpts: {
-    swDest: 'static/service-worker.js',
-    runtimeCaching: [
-      {
-        urlPattern: /.(png|jpg|webp|gif|svg)$/,
-        handler: 'CacheFirst',
-        options: {
-          cacheName: 'images',
-          expiration: {
-            maxEntries: 30,
-          },
-        },
-      },
-      {
-        urlPattern: /^https?.*/,
-        handler: 'NetworkFirst',
-        options: {
-          cacheName: 'https-calls',
-          networkTimeoutSeconds: 15,
-          expiration: {
-            maxEntries: 150,
-            maxAgeSeconds: 30 * 24 * 60 * 60, // 1 month
-          },
-          cacheableResponse: {
-            statuses: [0, 200],
-          },
-        },
-      },
-    ],
-  },
-
   webpack(config, options) {
+    let { isServer } = options;
+
     config.resolve.alias = {
       ...config.resolve.alias,
       '@self': path.resolve(__dirname),
     };
 
+    // todo: write your own fucking plugin to generate a service fucking worker
+    // because i'm fucking tired of going nowhere trying to find a way to make polyfills
+    // worker-compatible
+
+    if (!isServer) {
+      config.plugins.push(
+        new ServiceWorkerPlugin({
+          entry: path.join(__dirname, 'service-worker.ts'),
+          filename: 'service-worker.js',
+        })
+      );
+    }
+
     return config;
   },
 };
 
-module.exports = withBundleAnalyzer(
-  withTypescript(withCSS(withTranspileModules(withOffline(baseConfig))))
-);
+module.exports = withBundleAnalyzer(withCSS(withTranspileModules(baseConfig)));
