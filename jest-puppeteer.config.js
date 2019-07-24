@@ -5,7 +5,7 @@ module.exports = {
     debug: true,
   },
   server: {
-    command: 'node server.js',
+    command: 'yarn run build:server && node build/server.js',
     port: 3000,
     launchTimeout: 15000,
   },
