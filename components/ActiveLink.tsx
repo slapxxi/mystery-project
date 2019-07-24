@@ -1,24 +1,23 @@
-import { WithRouterProps } from 'next-server/router';
 import { LinkProps } from 'next/dist/client/link';
-import { withRouter } from 'next/router';
-import { Children, cloneElement, ReactElement } from 'react';
+import { useRouter } from 'next/router';
+import { Children, cloneElement, isValidElement } from 'react';
 import Link from './Link';
 
-interface Props extends LinkProps, WithRouterProps {
+interface Props extends LinkProps {
+  children?: React.ReactNode;
   activeClassName?: string;
-  children: ReactElement;
 }
 
 function ActiveLink(props: Props) {
-  let { children, router, activeClassName = 'active', ...rest } = props;
+  let { children, activeClassName = 'active', ...rest } = props;
   let child = Children.only(children);
+  let router = useRouter();
 
-  if (router && router.pathname === props.href) {
+  if (router.pathname === props.href && isValidElement(child)) {
     return <Link {...rest}>{cloneElement(child, { className: activeClassName })}</Link>;
   }
 
   return <Link {...rest}>{children}</Link>;
 }
 
-// @ts-ignore
-export default withRouter(ActiveLink);
+export default ActiveLink;

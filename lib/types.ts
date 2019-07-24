@@ -31,6 +31,7 @@ export interface AppContext extends NextAppContext {
 export interface AppTheme {
   type: 'dark' | 'light';
   colors: {
+    text: string;
     textLight: string;
     textEm: string;
     bg: string;
@@ -71,11 +72,17 @@ export interface PageContext extends NextPageContext {
 }
 
 /**
- * Props passed to page components
+ * Props passed to page components.
  */
-export interface PageProps extends WithTranslation {
+export interface PageProps {
   /** Active user if there is one */
   user?: Maybe<AuthUser>;
+}
+
+export interface PagePropsWithTranslation<Namespace extends TranslationNamespace>
+  extends PageProps,
+    Omit<WithTranslation, 't'> {
+  t: (key: PickTranslation<Namespace>) => string;
 }
 
 export interface ServerRequest extends Express.Request, http.IncomingMessage {
@@ -124,3 +131,25 @@ export type Unpacked<T> = T extends (infer U)[]
   : T extends Promise<infer U>
   ? U
   : T;
+
+export interface Route {
+  url: string;
+}
+
+export interface DynamicRoute {
+  (...params: any[]): Route;
+}
+
+export type PickTranslation<T> = T extends 'common'
+  ? CommonTranslationKey
+  : T extends 'header'
+  ? HeaderTranslationKey
+  : any;
+
+export type TranslationNamespace = 'common' | 'header' | 'footer';
+
+export type TranslationKey = CommonTranslationKey | HeaderTranslationKey;
+
+export type CommonTranslationKey = keyof typeof import('@self/static/locales/en/common.json');
+
+export type HeaderTranslationKey = keyof typeof import('@self/static/locales/en/header.json');

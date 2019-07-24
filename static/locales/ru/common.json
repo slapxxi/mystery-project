@@ -1,11 +1,14 @@
 {
   "feed": "Лента",
   "index": "Главная",
+  "language": "Язык",
   "language-en": "Английский",
   "language-ru": "Русский",
-  "language": "Язык",
   "login": "Авторизация",
   "profile": "Личный Профиль",
   "settings": "Настройки",
-  "sign in with github": "Войти через GitHub"
+  "sign in with github": "Войти через GitHub",
+  "dark theme": "Темная Тема",
+  "light theme": "Светлая Тема",
+  "theme": "Тема"
 }

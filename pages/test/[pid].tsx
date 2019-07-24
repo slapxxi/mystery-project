@@ -17,8 +17,13 @@ function TestPidPage() {
   );
 }
 
-// @ts-ignore
 TestPidPage.getInitialProps = async (context: PageContext) => {
+  let { query } = context;
+
+  if (query) {
+    console.log(query.pid);
+  }
+
   return {};
 };
 

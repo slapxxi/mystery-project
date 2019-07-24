@@ -1,11 +1,14 @@
 {
   "feed": "Feed",
   "index": "Main",
+  "language": "Language",
   "language-en": "English",
   "language-ru": "Russian",
-  "language": "Language",
   "login": "Sign In",
   "profile": "Profile",
   "settings": "Settings",
-  "sign in with github": "Sign In with GitHub"
+  "sign in with github": "Sign In with GitHub",
+  "dark theme": "Dark Theme",
+  "light theme": "Light Theme",
+  "theme": "Theme"
 }

@@ -16,3 +16,11 @@ declare module 'cacheable-response' {
 
   export default function(config: Configuration): Express.RequestHandler;
 }
+
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toMatchImageSnapshot(): R;
+    }
+  }
+}

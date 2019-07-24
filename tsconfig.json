@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "alwaysStrict": true,
-    "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -10,8 +8,9 @@
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
     "preserveConstEnums": true,
     "removeComments": false,
     "skipLibCheck": true,
@@ -27,16 +26,12 @@
     "isolatedModules": true
   },
   "exclude": [
-    "node_modules",
-    "dist",
     ".next",
     "build",
+    "dist",
     "next.config.js",
+    "node_modules",
     "server/node_modules"
   ]
-  // "include": [
-  //   "next-env.d.ts",
-  //   "**/*.ts",
-  //   "**/*.tsx"
-  // ]
+  // "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }

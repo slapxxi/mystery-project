@@ -3,10 +3,10 @@ import { jsx } from '@emotion/core';
 import { withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import useToast from '@self/lib/hooks/useToast';
-import { PageProps } from '@self/lib/types';
+import { PagePropsWithTranslation } from '@self/lib/types';
 import { useState } from 'react';
 
-interface Props extends PageProps {}
+interface Props extends PagePropsWithTranslation<'common' | 'header'> {}
 
 function FeedPage(props: Props) {
   let [count, setCount] = useState(0);

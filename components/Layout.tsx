@@ -22,6 +22,7 @@ function Layout(props: Props) {
         styles={(theme: AppTheme) => css`
           html {
             background: ${theme.colors.bg};
+            color: ${theme.colors.text};
           }
         `}
       ></Global>

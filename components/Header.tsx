@@ -5,14 +5,14 @@ import Link from '@self/components/Link';
 import { withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import useMediaQuery from '@self/lib/hooks/useMediaQuery';
-import { PageProps } from '@self/lib/types';
+import { PagePropsWithTranslation } from '@self/lib/types';
 import mediaQueries from '@self/styles/mediaQueries';
 import Avatar from './Avatar';
 import styles from './Header.styles';
 import Logo from './Logo';
 import Menu from './Menu';
 
-interface Props extends PageProps {}
+interface Props extends PagePropsWithTranslation<'header'> {}
 
 function Header(props: Props) {
   let { t } = props;
@@ -57,17 +57,17 @@ function Header(props: Props) {
           {matches ? (
             <ul css={styles.menu}>
               <li>
-                <ActiveLink href="/test" passHref activeClassName="active">
+                <ActiveLink href="/test" passHref>
                   <a css={styles.link}>Test</a>
                 </ActiveLink>
               </li>
               <li>
-                <ActiveLink href="/feed" passHref prefetch activeClassName="active">
+                <ActiveLink href="/feed" passHref prefetch>
                   <a css={styles.link}>{t('feed')}</a>
                 </ActiveLink>
               </li>
               <li>
-                <ActiveLink href="/settings" passHref prefetch activeClassName="active">
+                <ActiveLink href="/settings" passHref prefetch>
                   <a css={styles.link}>{t('settings')}</a>
                 </ActiveLink>
               </li>

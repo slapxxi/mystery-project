@@ -1,5 +1,4 @@
 function ServiceWorkerServer<T extends ServiceWorkerGlobalScope>(serviceWorker: T) {
-  // @ts-ignore
   let cacheNames = {
     scripts: '_scripts',
     images: '_images',
@@ -43,15 +42,16 @@ function ServiceWorkerServer<T extends ServiceWorkerGlobalScope>(serviceWorker: 
   }
 
   async function cleanup() {
-    // let keys = await caches.keys();
-    // // @ts-ignore
-    // let deleteOperations = keys.map((key) => {
-    //   if (Object.values(cacheNames).includes(key)) {
-    //     console.log('Deleting', key);
-    //     return caches.delete(key);
-    //   }
-    // });
-    // return Promise.all<boolean | undefined>([]);
+    let keys = await caches.keys();
+
+    let deleteOperations = keys.map((key) => {
+      if (Object.values(cacheNames).includes(key)) {
+        console.log('Deleting', key);
+        return caches.delete(key);
+      }
+    });
+
+    return Promise.all<boolean | undefined>(deleteOperations);
   }
 }
 

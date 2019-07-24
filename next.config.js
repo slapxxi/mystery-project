@@ -6,6 +6,7 @@ const withTranspileModules = require('next-transpile-modules');
 const withBundleAnalyzer = require('@zeit/next-bundle-analyzer');
 
 const ServiceWorkerPlugin = require('serviceworker-webpack-plugin');
+const WorkerPlugin = require('worker-plugin');
 
 dotenv.config();
 
@@ -51,6 +52,10 @@ const baseConfig = {
 
   transpileModules: ['lodash-es'],
 
+  workerLoaderOptions: {
+    publicPath: path.resolve(__dirname, '.next', 'static'),
+  },
+
   webpack(config, options) {
     let { isServer } = options;
 
@@ -65,6 +70,9 @@ const baseConfig = {
 
     if (!isServer) {
       config.plugins.push(
+        new WorkerPlugin({
+          globalObject: false,
+        }),
         new ServiceWorkerPlugin({
           entry: path.join(__dirname, 'service-worker.ts'),
           filename: 'service-worker.js',

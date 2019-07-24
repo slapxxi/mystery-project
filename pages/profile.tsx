@@ -4,10 +4,10 @@ import { Router, withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import isServer from '@self/lib/isServer';
 import redirectTo from '@self/lib/redirectTo';
-import { PageContext, PageProps } from '@self/lib/types';
+import { PageContext, PagePropsWithTranslation } from '@self/lib/types';
 import userAuthenticated from '@self/lib/universal/userAuthenticated';
 
-interface Props extends PageProps {}
+interface Props extends PagePropsWithTranslation<'common'> {}
 
 function ProfilePage(props: Props) {
   let { t } = props;

@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { Global, jsx } from '@emotion/core';
-import { AuthUser, Maybe } from '@self/lib/types';
-import { TFunction } from 'next-i18next';
+import { PageProps, PagePropsWithTranslation } from '@self/lib/types';
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -11,8 +10,8 @@ import Link from './Link';
 import styles from './Menu.styles';
 
 interface Props {
-  t: TFunction;
-  user: Maybe<AuthUser>;
+  t: PagePropsWithTranslation<'header'>['t'];
+  user: PageProps['user'];
 }
 
 function Menu(props: Props) {

@@ -7,7 +7,14 @@ let nexti18Next = new NextI18Next({
   localeSubpaths: 'foreign',
 });
 
-let { Link, withTranslation, appWithTranslation, Router, i18n } = nexti18Next;
+let {
+  Link,
+  withTranslation,
+  appWithTranslation,
+  Router,
+  i18n,
+  useTranslation,
+} = nexti18Next;
 
 export { Link, withTranslation, appWithTranslation, Router, i18n };
 export default nexti18Next;

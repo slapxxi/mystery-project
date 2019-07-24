@@ -1,33 +1,15 @@
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Link } from '@self/i18n';
+import routes from '@self/lib/routes';
 
-function TestingPage() {
-  let [state, setState] = useState<number[]>([]);
-
-  useEffect(() => {
-    setup([1, 2, 3, 4]).then((value) => {
-      setState(value);
-    });
-    setState([1, 2, 3]);
-  }, []);
-
+function TestingPage(props: any) {
   return (
     <div>
-      {state.length > 0
-        ? state.map((item) => (
-            <li>
-              <Link href="/test/[something]" as={`/test/${item}`}>
-                <a>{item}</a>
-              </Link>
-            </li>
-          ))
-        : 'nothing'}{' '}
+      <h1>Testing Page</h1>
+      <Link href={routes.testItem.url} as={routes.testPage(2).url}>
+        <a>Dynamic Page</a>
+      </Link>
     </div>
   );
-}
-
-async function setup<T>(value: T[]) {
-  return value;
 }
 
 export default TestingPage;

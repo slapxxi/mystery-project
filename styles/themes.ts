@@ -3,7 +3,8 @@ import { AppTheme } from '@self/lib/types';
 const defaultTheme: AppTheme = {
   type: 'light',
   colors: {
-    textLight: 'hsl(230, 10%, 30%)',
+    text: 'hsl(1, 10%, 20%)',
+    textLight: 'hsl(1, 10%, 40%)',
     textEm: 'hsl(1, 100%, 70%)',
     bg: 'hsl(1, 10%, 99%)',
   },
@@ -14,9 +15,10 @@ const defaultTheme: AppTheme = {
 const darkTheme: AppTheme = {
   type: 'dark',
   colors: {
+    text: 'hsl(1, 20%, 90%)',
     textLight: 'hsl(1, 10%, 30%)',
     textEm: 'hsl(1, 100%, 70%)',
-    bg: 'hsl(1, 1%, 20%)',
+    bg: 'hsl(1, 1%, 10%)',
   },
   sizes: {},
   fonts: {},

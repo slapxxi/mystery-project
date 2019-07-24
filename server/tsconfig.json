@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "module": "commonjs",
     "target": "esnext",
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "isolatedModules": false,
     "outDir": "build",
     "sourceMap": true,
     "allowJs": true
   },
-  "include": ["server/**/*"],
-  "exclude": ["server/spec/*"]
+  "exclude": ["node_modules"]
 }

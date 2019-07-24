@@ -2,11 +2,10 @@
 import { css, jsx } from '@emotion/core';
 import Image from '@self/components/Image';
 import { withTranslation } from '@self/i18n';
-import { PageProps } from '@self/lib/types';
+import routes from '@self/lib/routes';
+import { PagePropsWithTranslation } from '@self/lib/types';
 
-const URL = '/static/img/camping.jpg';
-
-interface Props extends PageProps {}
+interface Props extends PagePropsWithTranslation<'common' | 'header'> {}
 
 function IndexPage(props: Props) {
   let { t } = props;
@@ -14,12 +13,14 @@ function IndexPage(props: Props) {
   return (
     <div>
       <h1 data-testid="title">{t('index')}</h1>
+      <h2>Following</h2>
       <Image
         css={css`
           width: 100%;
         `}
-        src={URL}
+        src={routes.img('camping.jpg').url}
       />
+      <h2>Popular</h2>
     </div>
   );
 }
