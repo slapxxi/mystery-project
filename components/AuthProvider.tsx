@@ -14,12 +14,12 @@ interface Props {
 }
 
 function AuthProvider(props: Props) {
-  let toast = useToast();
   let { user, children } = props;
   let [state, dispatch] = useReducer(authReducer, {
     user,
     status: user ? 'active' : 'anonymous',
   });
+  let toast = useToast();
 
   useEffect(() => {
     if (state.status === 'pending') {

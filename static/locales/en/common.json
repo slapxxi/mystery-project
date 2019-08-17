@@ -1,5 +1,7 @@
 {
   "feed": "Feed",
+  "popular": "Popular",
+  "following": "Following",
   "index": "Main",
   "language": "Language",
   "language-en": "English",

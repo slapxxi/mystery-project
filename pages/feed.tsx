@@ -1,30 +1,53 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { withTranslation } from '@self/i18n';
+import PostsGrid from '@self/components/PostsGrid';
+import { Link, withTranslation } from '@self/i18n';
+import getUser from '@self/lib/getUser';
 import useAuth from '@self/lib/hooks/useAuth';
-import useToast from '@self/lib/hooks/useToast';
-import { PagePropsWithTranslation } from '@self/lib/types';
-import { useState } from 'react';
+import routes from '@self/lib/routes';
+import fetchPosts from '@self/lib/services/fetchPosts';
+import fetchSubscriptions from '@self/lib/services/fetchSubscriptions';
+import {
+  Maybe,
+  PageContext,
+  PagePropsWithTranslation,
+  Post,
+  Subscription,
+} from '@self/lib/types';
+import { useEffect, useState } from 'react';
 
-interface Props extends PagePropsWithTranslation<'common' | 'header'> {}
+interface Props extends PagePropsWithTranslation<'common' | 'header'> {
+  posts: Post[];
+  subscriptions?: Subscription[];
+}
 
 function FeedPage(props: Props) {
-  let [count, setCount] = useState(0);
-  let [auth] = useAuth();
-  let toast = useToast();
-  let { t } = props;
+  let { posts, subscriptions, t } = props;
+  let [authState] = useAuth();
+  let [subs, setSubs] = useState(null);
 
-  function handleToast() {
-    toast({ message: `${count}`, delay: count * 100, timeout: 2000 });
-    setCount((count) => count + 1);
-  }
+  useEffect(() => {
+    if (authState.user && !subscriptions) {
+      fetchSubscriptions(authState.user).then((subs) => {
+        setSubs(subs);
+      });
+    }
+  }, []);
 
-  if (auth.user) {
+  if (authState.user && (!!subs || !!subscriptions)) {
     return (
       <div>
-        <h1>{t('feed')}</h1>
-        <p>User: {auth.user.uid}</p>
-        <button onClick={handleToast}>Test</button>
+        <nav>
+          <Link href={routes.posts.new.url}>
+            <a>Create Post</a>
+          </Link>
+        </nav>
+        <h2>{t('following')}</h2>
+
+        <PostsGrid posts={subscriptions || subs}></PostsGrid>
+
+        <h2>{t('popular')}</h2>
+        <PostsGrid posts={posts}></PostsGrid>
       </div>
     );
   }
@@ -32,12 +55,24 @@ function FeedPage(props: Props) {
   return (
     <div>
       <h1>{t('feed')}</h1>
+      <PostsGrid posts={posts}></PostsGrid>
     </div>
   );
 }
 
-FeedPage.getInitialProps = async () => {
-  return { namespacesRequired: ['common', 'header'] };
+FeedPage.getInitialProps = async (context: PageContext) => {
+  let user = getUser(context);
+  let posts: Post[] = [];
+  let subscriptions: Maybe<Subscription[]> = null;
+
+  if (user) {
+    subscriptions = await fetchSubscriptions(user);
+  }
+
+  posts = await fetchPosts();
+
+  return { namespacesRequired: ['common', 'header'], posts, subscriptions };
 };
 
+// @ts-ignore
 export default withTranslation('common')(FeedPage);

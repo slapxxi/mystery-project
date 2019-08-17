@@ -1,6 +1,9 @@
 import { DynamicRoute, Route } from '@self/lib/types';
 
 const routes = {
+  posts: {
+    new: { url: '/posts/new' },
+  },
   // main routes
   index: { url: '/' } as Route,
   feed: { url: '/feed' } as Route,

@@ -4,6 +4,8 @@ import { NextApiRequest, NextApiResponse, NextPageContext } from 'next';
 import { WithTranslation } from 'next-i18next';
 import { AppContext as NextAppContext } from 'next/app';
 
+export type ID = string;
+
 export type Language = 'en' | 'ru';
 
 export type Maybe<T> = T | null;
@@ -79,6 +81,9 @@ export interface PageProps {
   user?: Maybe<AuthUser>;
 }
 
+/**
+ * Props with additional translation arguments passed to page components.
+ */
 export interface PagePropsWithTranslation<Namespace extends TranslationNamespace>
   extends PageProps,
     Omit<WithTranslation, 't'> {
@@ -153,3 +158,14 @@ export type TranslationKey = CommonTranslationKey | HeaderTranslationKey;
 export type CommonTranslationKey = keyof typeof import('@self/static/locales/en/common.json');
 
 export type HeaderTranslationKey = keyof typeof import('@self/static/locales/en/header.json');
+
+export interface Post {
+  id: string;
+  name: string;
+  description: string;
+  author: AuthUser;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Subscription extends Post {}
