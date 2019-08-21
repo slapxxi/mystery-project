@@ -30,7 +30,7 @@ function ProfilePage(props: Props) {
 }
 
 ProfilePage.getInitialProps = async (context: PageContext) => {
-  if (isServer(context) && !userAuthenticated(context.req)) {
+  if (isServer(context) && !userAuthenticated(context)) {
     redirectTo(context, '/');
   }
 

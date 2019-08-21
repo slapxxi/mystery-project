@@ -1,8 +1,8 @@
 import admin from 'firebase-admin';
 import http from 'http';
 import { NextApiRequest, NextApiResponse, NextPageContext } from 'next';
-import { WithTranslation } from 'next-i18next';
 import { AppContext as NextAppContext } from 'next/app';
+import { WithTranslation } from 'react-i18next';
 
 export type ID = string;
 
@@ -139,6 +139,7 @@ export type Unpacked<T> = T extends (infer U)[]
 
 export interface Route {
   url: string;
+  as?: string;
 }
 
 export interface DynamicRoute {
@@ -158,6 +159,11 @@ export type TranslationKey = CommonTranslationKey | HeaderTranslationKey;
 export type CommonTranslationKey = keyof typeof import('@self/static/locales/en/common.json');
 
 export type HeaderTranslationKey = keyof typeof import('@self/static/locales/en/header.json');
+
+export interface UserPost {
+  name: string;
+  description: string;
+}
 
 export interface Post {
   id: string;

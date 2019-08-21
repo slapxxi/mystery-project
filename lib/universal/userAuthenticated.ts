@@ -1,12 +1,12 @@
-import { ServerRequest } from '../types';
+import { PageContext } from '../types';
 
 /**
  * Determines if user is authenticated
  *
  * @param req Server request object
  */
-function userAuthenticated(req?: ServerRequest): req is ServerRequest {
-  return !!(req && req.session && req.session.decodedToken);
+function userAuthenticated(context: PageContext) {
+  return !!(context.req && context.req.session && context.req.session.decodedToken);
 }
 
 export default userAuthenticated;

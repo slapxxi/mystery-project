@@ -18,7 +18,6 @@ function ThemeProvider(props: Props) {
   let [theme, setTheme] = useState(defaultTheme);
 
   function changeTheme(themeType: AppTheme['type']) {
-    console.log(themeType);
     if (themeType === 'dark') {
       setTheme(darkTheme);
     } else {

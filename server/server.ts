@@ -82,6 +82,7 @@ app.prepare().then(() => {
     next();
   });
 
+  // @ts-ignore
   server.use(nextI18NextMiddleware(nexti18next));
 
   server.get(routes.serviceWorker, serviceWorkerHandler(app));

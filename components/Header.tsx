@@ -57,12 +57,12 @@ function Header(props: Props) {
           {matches ? (
             <ul css={styles.menu}>
               <li>
-                <ActiveLink href="/feed" passHref prefetch>
+                <ActiveLink href="/feed" passHref>
                   <a css={styles.link}>{t('feed')}</a>
                 </ActiveLink>
               </li>
               <li>
-                <ActiveLink href="/settings" passHref prefetch>
+                <ActiveLink href="/settings" passHref>
                   <a css={styles.link}>{t('settings')}</a>
                 </ActiveLink>
               </li>

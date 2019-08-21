@@ -27,6 +27,10 @@ function FeedPage(props: Props) {
   let [subs, setSubs] = useState(null);
 
   useEffect(() => {
+    let worker = new Worker('@self/store.worker', { type: 'module' });
+
+    worker.postMessage({ type: 'init' });
+
     if (authState.user && !subscriptions) {
       fetchSubscriptions(authState.user).then((subs) => {
         setSubs(subs);
@@ -39,7 +43,7 @@ function FeedPage(props: Props) {
       <div>
         <nav>
           <Link href={routes.posts.new.url}>
-            <a>Create Post</a>
+            <a>{t('create post')}</a>
           </Link>
         </nav>
         <h2>{t('following')}</h2>

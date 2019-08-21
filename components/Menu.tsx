@@ -75,7 +75,7 @@ function Navigation(props: any) {
           </Link>
         </li>
         <li>
-          <Link href="/settings" prefetch>
+          <Link href="/settings">
             <a>{t('settings')}</a>
           </Link>
         </li>

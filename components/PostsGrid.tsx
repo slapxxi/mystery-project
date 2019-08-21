@@ -1,5 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import { Link } from '@self/i18n';
+import routes from '@self/lib/routes';
 import { Post } from '@self/lib/types';
 
 interface Props {
@@ -22,7 +24,11 @@ function PostsGrid(props: Props) {
     >
       {posts.map((p) => (
         <li key={p.id}>
-          <h3>{p.name}</h3>
+          <h3>
+            <Link href={routes.post(p.id).url} as={routes.post(p.id).as}>
+              <a>{p.name}</a>
+            </Link>
+          </h3>
           <p>{p.description}</p>
         </li>
       ))}

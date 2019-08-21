@@ -14,8 +14,9 @@ let translation = JSON.parse(
 let translate = jest.fn((key) => translation[key]);
 
 it('renders', () => {
+  // @ts-ignore
   let { getByTestId } = render(<IndexPage t={translate} user={null} />);
   let pageTitle = getByTestId('title');
 
-  expect(pageTitle.textContent).toEqual('Main');
+  expect(pageTitle.textContent).toEqual('Home');
 });
