@@ -11,8 +11,13 @@ self.addEventListener('message', (message) => {
   let { data } = message;
 
   if (data.type === 'process') {
+    let file = data.payload as File;
+
     self.postMessage({ type: 'processing' });
-    fileReader.readAsDataURL(data.payload);
+
+    setTimeout(() => {
+      fileReader.readAsDataURL(file);
+    }, 2000);
   }
 });
 

@@ -22,8 +22,9 @@ async function fetchSubscriptions(user: AuthUser) {
           match.docs.map((doc) => ({
             id: doc.id,
             author: user,
-            name: doc.data().name,
+            title: doc.data().title,
             description: doc.data().description,
+            assets: doc.data().assets,
             createdAt: new Date(),
             updatedAt: new Date(),
           }))

@@ -13,13 +13,14 @@ async function fetchPosts() {
     docs.forEach((d) => {
       let data = d.data();
       let { id } = d;
-      let { name, description, author } = data;
+      let { title, description, author, assets } = data;
 
       posts.push({
         id,
-        name,
+        title,
         description,
         author,
+        assets,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

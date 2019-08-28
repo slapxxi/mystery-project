@@ -161,15 +161,17 @@ export type CommonTranslationKey = keyof typeof import('@self/static/locales/en/
 export type HeaderTranslationKey = keyof typeof import('@self/static/locales/en/header.json');
 
 export interface UserPost {
-  name: string;
+  title: string;
   description: string;
+  assets: FileList;
 }
 
 export interface Post {
   id: string;
-  name: string;
+  title: string;
   description: string;
   author: AuthUser;
+  assets: string[];
   createdAt: Date;
   updatedAt: Date;
 }

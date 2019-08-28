@@ -1,7 +1,7 @@
 import AppContainer from '@self/components/AppContainer';
 import { appWithTranslation } from '@self/i18n';
 import { AppProps } from '@self/lib/types';
-import App, { Container as NextContainer } from 'next/app';
+import App from 'next/app';
 import React from 'react';
 
 class MyApp extends App {
@@ -32,11 +32,9 @@ class MyApp extends App {
     let { Component, pageProps } = this.props;
 
     return (
-      <NextContainer>
-        <AppContainer user={pageProps.user}>
-          <Component {...pageProps} />
-        </AppContainer>
-      </NextContainer>
+      <AppContainer user={pageProps.user}>
+        <Component {...pageProps} />
+      </AppContainer>
     );
   }
 }

@@ -26,7 +26,7 @@ function PostsGrid(props: Props) {
         <li key={p.id}>
           <h3>
             <Link href={routes.post(p.id).url} as={routes.post(p.id).as}>
-              <a>{p.name}</a>
+              <a>{p.title}</a>
             </Link>
           </h3>
           <p>{p.description}</p>
