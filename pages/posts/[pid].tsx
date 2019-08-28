@@ -9,6 +9,7 @@ interface Props extends PagePropsWithTranslation<'common'> {
   post: Post;
 }
 
+// todo: eliminate layout shifting while content is loading
 function PostPage(props: Props) {
   let { post, t } = props;
   let [authState] = useAuth();

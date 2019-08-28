@@ -1,8 +1,8 @@
 import { IndexPage } from '@self/pages/index';
+import { render } from '@testing-library/react';
 import fs from 'fs';
 import path from 'path';
 import React from 'react';
-import { render } from 'react-testing-library';
 
 let translation = JSON.parse(
   fs.readFileSync(

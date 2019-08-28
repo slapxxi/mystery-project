@@ -1,5 +1,5 @@
+import { render } from '@testing-library/react';
 import React from 'react';
-import { render } from 'react-testing-library';
 import Image from './Image';
 
 const imageTypes = ['webp', 'jpg', 'png'];

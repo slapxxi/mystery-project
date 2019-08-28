@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/core';
 import { withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import useForm from '@self/lib/hooks/useForm';
@@ -13,7 +13,6 @@ import { PageContext, PagePropsWithTranslation } from '@self/lib/types';
 import userAuthenticated from '@self/lib/universal/userAuthenticated';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { imageStyles } from './new.styles';
 
 interface Props extends PagePropsWithTranslation<'common'> {}
 
@@ -141,5 +140,9 @@ NewPostPage.getInitialProps = async (context: PageContext) => {
 
   return { namespacesRequired: ['common'] };
 };
+
+const imageStyles = css`
+  width: 200px;
+`;
 
 export default withTranslation('common')(NewPostPage);
