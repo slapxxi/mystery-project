@@ -1,5 +1,8 @@
 {
   "preview": "Preview",
+  "edit": "Edit",
+  "cancel": "Cancel",
+  "editing": "Editing",
   "assets": "Assets",
   "new post": "New Post",
   "create post": "Create Post",

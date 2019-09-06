@@ -1,6 +1,11 @@
-import { DynamicRoute, ID, Route } from '@self/lib/types';
+import { DynamicRoute, ID, Route, UID } from '@self/lib/types';
 
 const routes = {
+  user: ((uid: UID) => ({
+    url: `/users/[uid]`,
+    as: `/users/${uid}`,
+  })) as DynamicRoute,
+
   posts: {
     new: { url: '/posts/new' },
   },
@@ -8,6 +13,7 @@ const routes = {
     url: `/posts/[pid]`,
     as: `/posts/${id}`,
   })) as DynamicRoute,
+
   // main routes
   index: { url: '/' } as Route,
   feed: { url: '/feed' } as Route,

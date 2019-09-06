@@ -13,7 +13,7 @@ async function fetchPosts() {
     docs.forEach((d) => {
       let data = d.data();
       let { id } = d;
-      let { title, description, author, assets } = data;
+      let { title, description, author, assets, createdAt } = data;
 
       posts.push({
         id,
@@ -21,7 +21,7 @@ async function fetchPosts() {
         description,
         author,
         assets,
-        createdAt: new Date(),
+        createdAt,
         updatedAt: new Date(),
       });
     });

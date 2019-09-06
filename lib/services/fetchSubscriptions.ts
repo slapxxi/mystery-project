@@ -4,6 +4,7 @@ import { AuthUser, ID, Subscription } from '../types';
 
 async function fetchSubscriptions(user: AuthUser) {
   let subscriptions: Subscription[] = [];
+  console.log(user);
 
   try {
     let db = firebase.firestore();
@@ -18,22 +19,22 @@ async function fetchSubscriptions(user: AuthUser) {
           .collection('posts')
           .where('author', '==', id)
           .get();
+
         subscriptions = subscriptions.concat(
           match.docs.map((doc) => ({
             id: doc.id,
-            author: user,
+            author: doc.data().author,
             title: doc.data().title,
             description: doc.data().description,
             assets: doc.data().assets,
-            createdAt: new Date(),
+            createdAt: doc.data().createdAt,
             updatedAt: new Date(),
           }))
         );
       })
     );
-    subscriptions;
   } catch (e) {
-    console.log(e);
+    throw e;
   }
 
   return subscriptions;

@@ -6,6 +6,8 @@ import { WithTranslation } from 'react-i18next';
 
 export type ID = string;
 
+export type UID = string;
+
 export type Language = 'en' | 'ru';
 
 export type Maybe<T> = T | null;
@@ -45,6 +47,7 @@ export interface AppTheme {
 export interface AuthUser {
   uid: string;
   picture: string;
+  handle: string;
 }
 
 export interface AuthState {
@@ -170,7 +173,7 @@ export interface Post {
   id: string;
   title: string;
   description: string;
-  author: AuthUser;
+  author: UID;
   assets: string[];
   createdAt: Date;
   updatedAt: Date;
