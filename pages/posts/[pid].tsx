@@ -58,6 +58,7 @@ let pageMachine = Machine({
   },
 });
 
+// todo: move user extraction to `getInitialProps` or to the post fetching service
 // todo: eliminate layout shifting while content is loading
 function PostPage(props: Props) {
   let { post, t } = props;

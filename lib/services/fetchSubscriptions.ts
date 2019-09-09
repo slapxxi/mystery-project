@@ -4,7 +4,6 @@ import { AuthUser, ID, Subscription } from '../types';
 
 async function fetchSubscriptions(user: AuthUser) {
   let subscriptions: Subscription[] = [];
-  console.log(user);
 
   try {
     let db = firebase.firestore();

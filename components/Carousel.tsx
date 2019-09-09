@@ -2,7 +2,8 @@
 import { css, jsx } from '@emotion/core';
 import { AppTheme } from '@self/lib/types';
 import { useMachine } from '@xstate/react';
-import { Machine } from 'xstate';
+import { useEffect } from 'react';
+import { assign, Machine } from 'xstate';
 
 interface Context {
   numberOfSlides: number;
@@ -11,12 +12,15 @@ interface Context {
 
 interface State {
   states: {
-    showing: {};
+    idle: {};
     changing: {};
   };
 }
 
-type Event = { type: 'CHANGE_SLIDE'; payload: number };
+type Event =
+  | { type: 'CHANGE_SLIDE'; payload: number }
+  | { type: 'NEXT_SLIDE' }
+  | { type: 'PREV_SLIDE' };
 
 interface Props {
   assets: string[];
@@ -24,21 +28,26 @@ interface Props {
 
 let carouselMachine = Machine<Context, State, Event>({
   id: 'carousel',
-  initial: 'showing',
+  initial: 'idle',
   context: {
     numberOfSlides: null,
     currentSlide: null,
   },
   states: {
-    showing: {
+    idle: {
       on: {
+        NEXT_SLIDE: { target: 'changing' },
+        PREV_SLIDE: { target: 'changing' },
         CHANGE_SLIDE: { target: 'changing', cond: 'inBoundaries' },
       },
     },
     changing: {
       invoke: {
         src: 'changeSlide',
-        onDone: { target: 'showing', actions: ['setSlide'] },
+        onDone: {
+          target: 'idle',
+          actions: assign({ currentSlide: (_context, event) => event.data }),
+        },
       },
     },
   },
@@ -48,41 +57,64 @@ function Carousel(props: Props) {
   let { assets } = props;
   let [state, send] = useMachine(carouselMachine, {
     context: { numberOfSlides: assets.length, currentSlide: 0 },
-    actions: { setSlide },
     services: { changeSlide },
     guards: { inBoundaries },
   });
+  let { currentSlide } = state.context;
 
-  function inBoundaries(context: Context, event: Event) {
-    return context.numberOfSlides - 1 >= event.payload;
-  }
+  useEffect(() => {
+    function keyboardListener(event: KeyboardEvent) {
+      switch (event.key) {
+        case 'ArrowRight':
+          return send('NEXT_SLIDE');
+        case 'ArrowLeft':
+          return send('PREV_SLIDE');
+        default:
+          return;
+      }
+    }
 
-  function setSlide(context: Context, event: any) {
-    context.currentSlide = event.data;
-  }
+    window.addEventListener('keydown', keyboardListener);
+    return () => window.removeEventListener('keydown', keyboardListener);
+  }, []);
 
-  function changeSlide(context: Context, event: Event) {
-    return new Promise((res) => {
-      res(event.payload);
-    });
+  function handleClick(index: number) {
+    send('CHANGE_SLIDE', { payload: index });
   }
 
   return (
     <div>
-      <img src={assets[state.context.currentSlide]} alt="" css={imageStyles} />
+      <div css={viewportStyles}>
+        <ul
+          css={[
+            slidesStyles,
+            css`
+              transform: translate(
+                ${currentSlide === 0 ? '0' : `-${currentSlide * 100}%`}
+              );
+            `,
+          ]}
+        >
+          {assets.map((asset, index) => (
+            <li key={index}>
+              <img src={asset} alt="slide" />
+            </li>
+          ))}
+        </ul>
+      </div>
       <ul css={listStyles}>
         {assets.map((asset, index) => (
-          <li css={listItemStyles} key={`${asset}+${index}`}>
+          <li css={listItemStyles} key={`${index}`}>
             <input
-              id={`image-${index}`}
+              id={`slide-${index}`}
               type="radio"
-              name="image"
-              defaultChecked={state.context.currentSlide === index}
-              onChange={() => send('CHANGE_SLIDE', { payload: index })}
+              name="slide"
+              defaultChecked={currentSlide === index}
+              onClick={() => handleClick(index)}
               css={inputStyles}
             />
-            <label htmlFor={`image-${index}`} css={labelStyles}>
-              <img src={asset} alt="Image" key={index} css={imageStyles} />
+            <label htmlFor={`slide-${index}`} css={labelStyles}>
+              <img src={asset} alt="Image" css={imageStyles} />
             </label>
           </li>
         ))}
@@ -90,6 +122,26 @@ function Carousel(props: Props) {
     </div>
   );
 }
+
+const viewportStyles = css`
+  overflow-x: hidden;
+`;
+
+const slidesStyles = css`
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: transform 0.3s ease-out;
+
+  & > li {
+    flex: 1 0 100%;
+
+    & > img {
+      width: 100%;
+    }
+  }
+`;
 
 const listStyles = css`
   display: flex;
@@ -121,5 +173,28 @@ const labelStyles = css`
   border-radius: 4px;
   overflow: hidden;
 `;
+
+function changeSlide(context: Context, event: Event) {
+  let { numberOfSlides, currentSlide } = context;
+
+  return new Promise((res, rej) => {
+    switch (event.type) {
+      case 'NEXT_SLIDE':
+        return res((currentSlide + 1 + numberOfSlides) % numberOfSlides);
+      case 'PREV_SLIDE':
+        return res((currentSlide - 1 + numberOfSlides) % numberOfSlides);
+      case 'CHANGE_SLIDE':
+        return res(event.payload);
+      default:
+        return rej('Unknown event');
+    }
+  });
+}
+
+function inBoundaries(context: Context, event: Event) {
+  if (event.type === 'CHANGE_SLIDE') {
+    return context.numberOfSlides - 1 >= event.payload;
+  }
+}
 
 export default Carousel;

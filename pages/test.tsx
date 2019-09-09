@@ -50,9 +50,6 @@ function TestingPage(_props: any) {
     },
   });
 
-  console.log(state.event);
-  console.log(state.value);
-
   return (
     <div>
       <h1>{state.matches('active') ? 'Active' : 'Inactive'}</h1>
