@@ -52,7 +52,6 @@ export interface AuthUser {
 
 export interface AuthState {
   user: Maybe<AuthUser>;
-  status: 'pending' | 'active' | 'anonymous' | 'signout';
 }
 
 export interface AuthProps {
@@ -145,8 +144,8 @@ export interface Route {
   as?: string;
 }
 
-export interface DynamicRoute {
-  (...params: any[]): Route;
+export interface DynamicRoute<T> {
+  (...params: T[]): Route;
 }
 
 export type PickTranslation<T> = T extends 'common'

@@ -28,8 +28,8 @@ function Header(props: Props) {
             order: ${matches ? 2 : 0};
           `}
         >
-          {auth.user ? (
-            <Avatar user={auth.user} />
+          {auth.matches('auth') ? (
+            <Avatar user={auth.context.user} />
           ) : (
             <ActiveLink href="/login" passHref>
               <a css={styles.signinLink}>{t('login')}</a>
@@ -68,7 +68,7 @@ function Header(props: Props) {
               </li>
             </ul>
           ) : (
-            <Menu t={t} user={auth.user} />
+            <Menu t={t} user={auth.context.user} />
           )}
         </li>
       </ul>

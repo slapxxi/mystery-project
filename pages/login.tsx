@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import GithubIcon from '@self/components/icons/GithubIcon';
+import Spinner from '@self/components/Spinner';
 import { Router, withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import isServer from '@self/lib/isServer';
@@ -15,12 +16,20 @@ function LoginPage(props: Props) {
   let { t } = props;
   let [auth, actions] = useAuth();
 
-  if (auth.user) {
+  if (auth.matches('auth')) {
     Router.push('/feed');
   }
 
   async function handleClick() {
-    actions.requestSignIn();
+    actions.signIn();
+  }
+
+  if (auth.matches('signingIn')) {
+    return (
+      <div>
+        <Spinner></Spinner>
+      </div>
+    );
   }
 
   return (
@@ -29,7 +38,7 @@ function LoginPage(props: Props) {
       <button
         data-testid="signin"
         onClick={handleClick}
-        disabled={auth.status === 'pending'}
+        // disabled={auth.status === 'pending'}
         css={(theme: AppTheme) => css`
           display: inline-flex;
           align-items: center;

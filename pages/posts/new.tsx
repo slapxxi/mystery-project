@@ -63,7 +63,7 @@ function NewPostPage(props: Props) {
   }
 
   function handleCreatePost() {
-    createPost(authState.user, {
+    createPost(authState.context.user, {
       title: formState.values.title,
       description: formState.values.description,
       assets: formState.values.assets,

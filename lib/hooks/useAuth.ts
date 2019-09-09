@@ -1,29 +1,21 @@
-import { authContext } from '@self/components/AuthProvider';
+import { authContext, AuthProviderContext } from '@self/components/AuthProvider';
 import { useContext } from 'react';
-import { AuthState, AuthUser } from '../types';
+import { AuthUser } from '../types';
 
 interface ActionCreators {
-  requestSignIn: () => void;
-  requestSignOut: () => void;
   signOut: () => void;
-  signIn: (user: AuthUser) => void;
+  signIn: (user?: AuthUser) => void;
 }
 
-function useAuth(): [AuthState, ActionCreators] {
-  let { state, dispatch } = useContext(authContext);
+function useAuth(): [AuthProviderContext['state'], ActionCreators] {
+  let { state, send } = useContext(authContext);
 
   let actions: ActionCreators = {
-    requestSignIn: () => {
-      dispatch({ type: 'REQUEST_SIGN_IN' });
-    },
-    requestSignOut: () => {
-      dispatch({ type: 'REQUEST_SIGN_OUT' });
-    },
     signIn: (user) => {
-      dispatch({ type: 'SIGN_IN', payload: user });
+      send({ type: 'SIGN_IN', payload: user });
     },
     signOut: () => {
-      dispatch({ type: 'SIGN_OUT' });
+      send({ type: 'SIGN_OUT' });
     },
   };
 

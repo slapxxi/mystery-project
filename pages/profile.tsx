@@ -1,9 +1,10 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Router, withTranslation } from '@self/i18n';
+import { Link, Router, withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import isServer from '@self/lib/isServer';
 import redirectTo from '@self/lib/redirectTo';
+import routes from '@self/lib/routes';
 import { PageContext, PagePropsWithTranslation } from '@self/lib/types';
 import userAuthenticated from '@self/lib/universal/userAuthenticated';
 
@@ -13,17 +14,23 @@ function ProfilePage(props: Props) {
   let { t } = props;
   let [auth, authActions] = useAuth();
 
-  if (!auth.user) {
+  if (auth.matches('anonymous')) {
     Router.push('/');
   }
 
   function handleClick() {
-    authActions.requestSignOut();
+    authActions.signOut();
   }
 
   return (
     <div>
       <h1>{t('profile')}</h1>
+      <Link
+        href={routes.user(auth.context.user.uid).url}
+        as={routes.user(auth.context.user.uid).as}
+      >
+        <a href="">Your Page</a>
+      </Link>
       <button onClick={handleClick}>Sign Out</button>
     </div>
   );

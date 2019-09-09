@@ -71,7 +71,7 @@ function FeedPage(props: Props) {
   let { posts, subscriptions, t } = props;
   let [authState] = useAuth();
   let [pageState, send] = useMachine(pageMachine, {
-    context: { user: authState.user, subscriptions },
+    context: { user: authState.context.user, subscriptions },
     services: {
       fetchSubscriptions: (context: Context) => fetchSubscriptions(context.user),
     },
@@ -79,7 +79,7 @@ function FeedPage(props: Props) {
 
   return (
     <div>
-      {authState.user && (
+      {authState.matches('auth') && (
         <Link href={routes.posts.new.url}>
           <a href="">{t('create post')}</a>
         </Link>

@@ -64,7 +64,7 @@ function PostPage(props: Props) {
   let { post, t } = props;
   let [authState] = useAuth();
   let [pageState, send] = useMachine(pageMachine, {
-    context: { post, user: authState.user },
+    context: { post, user: authState.context.user },
     guards: {
       isAuth: (context) =>
         context.user && context.post && context.user.uid === context.post.author,
@@ -93,7 +93,15 @@ function PostPage(props: Props) {
         </div>
         <hgroup>
           <h1>{post.title}</h1>
-          <span>Created by You</span>
+          <span>
+            Created by{' '}
+            <Link
+              href={routes.user(authState.context.user.uid).url}
+              as={routes.user(authState.context.user.uid).as}
+            >
+              <a>You</a>
+            </Link>
+          </span>
         </hgroup>
         <p>{post.description}</p>
 

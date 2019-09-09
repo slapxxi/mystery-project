@@ -20,7 +20,7 @@ async function signOut() {
     let message = await response.json();
     return message;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
 

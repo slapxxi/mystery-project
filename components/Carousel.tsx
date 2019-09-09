@@ -20,7 +20,9 @@ interface State {
 type Event =
   | { type: 'CHANGE_SLIDE'; payload: number }
   | { type: 'NEXT_SLIDE' }
-  | { type: 'PREV_SLIDE' };
+  | { type: 'PREV_SLIDE' }
+  | { type: 'FIRST_SLIDE' }
+  | { type: 'LAST_SLIDE' };
 
 interface Props {
   assets: string[];
@@ -38,6 +40,8 @@ let carouselMachine = Machine<Context, State, Event>({
       on: {
         NEXT_SLIDE: { target: 'changing' },
         PREV_SLIDE: { target: 'changing' },
+        FIRST_SLIDE: { target: 'changing' },
+        LAST_SLIDE: { target: 'changing' },
         CHANGE_SLIDE: { target: 'changing', cond: 'inBoundaries' },
       },
     },
@@ -65,10 +69,14 @@ function Carousel(props: Props) {
   useEffect(() => {
     function keyboardListener(event: KeyboardEvent) {
       switch (event.key) {
+        case 'ArrowUp':
         case 'ArrowRight':
-          return send('NEXT_SLIDE');
+          event.preventDefault();
+          return event.shiftKey ? send('LAST_SLIDE') : send('NEXT_SLIDE');
+        case 'ArrowDown':
         case 'ArrowLeft':
-          return send('PREV_SLIDE');
+          event.preventDefault();
+          return event.shiftKey ? send('FIRST_SLIDE') : send('PREV_SLIDE');
         default:
           return;
       }
@@ -183,6 +191,10 @@ function changeSlide(context: Context, event: Event) {
         return res((currentSlide + 1 + numberOfSlides) % numberOfSlides);
       case 'PREV_SLIDE':
         return res((currentSlide - 1 + numberOfSlides) % numberOfSlides);
+      case 'FIRST_SLIDE':
+        return res(0);
+      case 'LAST_SLIDE':
+        return res(numberOfSlides - 1);
       case 'CHANGE_SLIDE':
         return res(event.payload);
       default:
