@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import Spinner from '@self/components/Spinner';
 import { Link, Router, withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import isServer from '@self/lib/isServer';
@@ -14,12 +15,22 @@ function ProfilePage(props: Props) {
   let { t } = props;
   let [auth, authActions] = useAuth();
 
-  if (auth.matches('anonymous')) {
-    Router.push('/');
-  }
-
   function handleClick() {
     authActions.signOut();
+  }
+
+  if (auth.matches('anonymous')) {
+    Router.push('/');
+
+    return <div>Access Denied</div>;
+  }
+
+  if (auth.matches('signingOut')) {
+    return (
+      <div>
+        <Spinner></Spinner>
+      </div>
+    );
   }
 
   return (

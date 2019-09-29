@@ -36,7 +36,8 @@ function UserPage(props: Props) {
   let [pageState, send] = useMachine(pageMachine, {
     context: { user },
     guards: {
-      isAuthenticated: (context) => context.user.uid === authState.context.user.uid,
+      isAuthenticated: (context) =>
+        authState.matches('auth') && context.user.uid === authState.context.user.uid,
     },
     actions: { signOut: () => authActions.signOut() },
   });

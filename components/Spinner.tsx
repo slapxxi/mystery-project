@@ -3,18 +3,21 @@ import { css, jsx, keyframes } from '@emotion/core';
 
 function Spinner() {
   return (
-    <svg width="20" height="20" stroke="#000" viewBox="0 0 38 38" css={ringStyles}>
-      <g strokeWidth="2" fill="none" fillRule="evenodd" transform="translate(1 1)">
-        <circle strokeOpacity=".5" cx="18" cy="18" r="18" />
-        <path d="M36 18c0-9.94-8.06-18-18-18" />
-      </g>
+    <svg width="20" height="20" stroke="#000" viewBox="0 0 100 100" css={ringStyles}>
+      <circle
+        cx="50"
+        cy="50"
+        r="39.636"
+        style={{ fill: 'none', stroke: '#000', strokeOpacity: 0.501961, strokeWidth: 20 }}
+      />
+      <circle cx="50" cy="10.364" r="9.744" />
     </svg>
   );
 }
 
 let rotate = keyframes`
 100% {
-  transform: rotate(360deg);
+	transform: rotate(360deg);
 }
 `;
 

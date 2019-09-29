@@ -16,44 +16,45 @@ const link = (theme: AppTheme) => css`
 
   :link,
   :visited {
-    color: ${theme.colors.textLight};
+    color: ${theme.colors.headerLink};
   }
 
   :hover,
   :active {
-    color: ${theme.colors.textEm};
+    color: ${theme.colors.headerLinkActive};
   }
 
   &.active {
-    color: ${theme.colors.textEm};
+    color: ${theme.colors.headerLinkActive};
   }
 `;
 
 const header = css`
   padding: 0.5rem;
+  background-color: hsl(0, 0%, 20%);
 `;
 
 const signinLink = (theme: AppTheme) => css`
   text-decoration: none;
   padding: 5px;
-  border: 1px solid ${theme.colors.textLight};
+  border: 1px solid ${theme.colors.headerLink};
   border-radius: 3px;
 
   :link,
   :visited {
-    color: ${theme.colors.textLight};
+    color: ${theme.colors.headerLink};
   }
 
   :hover,
   :active {
-    border-color: ${theme.colors.textEm};
-    color: ${theme.colors.textEm};
+    border-color: ${theme.colors.headerLinkActive};
+    color: ${theme.colors.headerLinkActive};
   }
 
   &.active {
-    background-color: ${theme.colors.textEm};
-    border-color: ${theme.colors.textEm};
-    color: white;
+    background-color: ${theme.colors.headerLinkActive};
+    border-color: ${theme.colors.headerLinkActive};
+    color: ${theme.colors.headerBg};
   }
 `;
 

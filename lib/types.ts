@@ -39,6 +39,10 @@ export interface AppTheme {
     textLight: string;
     textEm: string;
     bg: string;
+    itemBg: string;
+    headerBg: string;
+    headerLink: string;
+    headerLinkActive: string;
   };
   sizes: {};
   fonts: {};

@@ -2,10 +2,10 @@
 import { css, jsx } from '@emotion/core';
 import PostsGrid from '@self/components/PostsGrid';
 import Spinner from '@self/components/Spinner';
-import { Link, withTranslation } from '@self/i18n';
+import Toolbar from '@self/components/Toolbar';
+import { withTranslation } from '@self/i18n';
 import getUser from '@self/lib/getUser';
 import useAuth from '@self/lib/hooks/useAuth';
-import routes from '@self/lib/routes';
 import fetchPosts from '@self/lib/services/fetchPosts';
 import fetchSubscriptions from '@self/lib/services/fetchSubscriptions';
 import {
@@ -19,6 +19,8 @@ import {
 import { useMachine } from '@xstate/react';
 import { assign, Machine } from 'xstate';
 
+type PostCategory = 'following' | 'popular' | 'recent';
+
 interface Props extends PagePropsWithTranslation<'common' | 'header'> {
   posts: Post[];
   subscriptions?: Subscription[];
@@ -28,6 +30,7 @@ interface Context {
   user: Maybe<AuthUser>;
   subscriptions: Maybe<Subscription[]>;
   error: Maybe<Error>;
+  category: PostCategory;
 }
 
 let pageMachine = Machine<Context>({
@@ -37,6 +40,7 @@ let pageMachine = Machine<Context>({
     user: null,
     subscriptions: null,
     error: null,
+    category: 'popular',
   },
   states: {
     idle: {
@@ -63,7 +67,14 @@ let pageMachine = Machine<Context>({
     error: {
       on: { RETRY: 'loading' },
     },
-    success: { type: 'final' },
+    success: {
+      on: {
+        CHANGE_CATEGORY: {
+          target: 'loading',
+          actions: ['setCategory'],
+        },
+      },
+    },
   },
 });
 
@@ -75,21 +86,27 @@ function FeedPage(props: Props) {
     services: {
       fetchSubscriptions: (context: Context) => fetchSubscriptions(context.user),
     },
+    actions: {
+      setCategory: (context, event) => {
+        context.category = event.payload;
+      },
+    },
   });
 
   return (
     <div>
-      {authState.matches('auth') && (
-        <Link href={routes.posts.new.url}>
-          <a href="">{t('create post')}</a>
-        </Link>
-      )}
+      <Toolbar
+        t={t}
+        category={pageState.context.category}
+        onChangeCategory={(category: PostCategory) =>
+          send({ type: 'CHANGE_CATEGORY', payload: category })
+        }
+      ></Toolbar>
       {pageState.matches('loading') ? (
         <Spinner></Spinner>
       ) : pageState.matches('success') ? (
         <>
-          <h2>Following</h2>
-          <PostsGrid posts={pageState.context.subscriptions}></PostsGrid>
+          <PostsGrid posts={posts}></PostsGrid>
         </>
       ) : pageState.matches('error') ? (
         <>
@@ -97,8 +114,6 @@ function FeedPage(props: Props) {
           <button onClick={() => send('RETRY')}>Retry</button>
         </>
       ) : null}
-      <h2>Popular</h2>
-      <PostsGrid posts={posts}></PostsGrid>
     </div>
   );
 }
