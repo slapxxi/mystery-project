@@ -11,6 +11,7 @@ import fetchSubscriptions from '@self/lib/services/fetchSubscriptions';
 import {
   AuthUser,
   Maybe,
+  NormalizedPost,
   PageContext,
   PagePropsWithTranslation,
   Post,
@@ -22,7 +23,7 @@ import { assign, Machine } from 'xstate';
 type PostCategory = 'following' | 'popular' | 'recent';
 
 interface Props extends PagePropsWithTranslation<'common' | 'header'> {
-  posts: Post[];
+  posts: NormalizedPost[];
   subscriptions?: Subscription[];
 }
 
@@ -79,10 +80,10 @@ let pageMachine = Machine<Context>({
 });
 
 function FeedPage(props: Props) {
-  let { posts, subscriptions, t } = props;
+  let { posts, t } = props;
   let [authState] = useAuth();
   let [pageState, send] = useMachine(pageMachine, {
-    context: { user: authState.context.user, subscriptions },
+    context: { user: authState.context.user },
     services: {
       fetchSubscriptions: (context: Context) => fetchSubscriptions(context.user),
     },

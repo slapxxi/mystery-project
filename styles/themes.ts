@@ -3,9 +3,9 @@ import { AppTheme } from '@self/lib/types';
 const defaultTheme: AppTheme = {
   type: 'light',
   colors: {
-    text: 'hsl(1, 10%, 20%)',
-    textLight: 'hsl(1, 10%, 40%)',
-    textEm: 'hsl(1, 100%, 70%)',
+    text: 'hsl(0, 10%, 20%)',
+    textLight: 'hsl(0, 0%, 60%)',
+    textEm: 'hsl(0, 100%, 70%)',
     itemBg: 'hsl(0, 0%, 100%)',
     bg: 'hsl(0, 0%, 96%)',
 

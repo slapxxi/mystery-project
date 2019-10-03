@@ -21,7 +21,7 @@ async function fetchPosts() {
         description,
         author,
         assets,
-        createdAt,
+        createdAt: toDate(createdAt.seconds),
         updatedAt: new Date(),
       });
     });
@@ -30,6 +30,12 @@ async function fetchPosts() {
   }
 
   return posts;
+}
+
+function toDate(seconds: number) {
+  let date = new Date(1970, 0, 1);
+  date.setSeconds(seconds);
+  return date;
 }
 
 export default fetchPosts;

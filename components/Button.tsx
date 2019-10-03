@@ -7,8 +7,17 @@ function Button(props: Props) {
   return (
     <button
       css={css`
-        border: 0;
+        padding: 6px;
+        border: 1px solid lightgrey;
+        border-radius: 4px;
         background: none;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        color: grey;
+
+        &:hover {
+          border-color: grey;
+          color: black;
+        }
       `}
       {...props}
     />

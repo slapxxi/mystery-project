@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { css, jsx, keyframes } from '@emotion/core';
+import { AppTheme } from '@self/lib/types';
 
 function Spinner() {
   return (
@@ -8,7 +9,12 @@ function Spinner() {
         cx="50"
         cy="50"
         r="39.636"
-        style={{ fill: 'none', stroke: '#000', strokeOpacity: 0.501961, strokeWidth: 20 }}
+        css={(theme: AppTheme) => css`
+          fill: none;
+          stroke: ${theme.type === 'dark' ? '#fff' : '#000'};
+          stroke-opacity: 0.5;
+          stroke-width: 20;
+        `}
       />
       <circle cx="50" cy="10.364" r="9.744" />
     </svg>

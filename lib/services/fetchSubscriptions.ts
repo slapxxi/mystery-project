@@ -12,6 +12,7 @@ async function fetchSubscriptions(user: AuthUser) {
       .doc(user.uid)
       .get();
     let userSubscriptions: ID[] = userData.get('subscriptions');
+
     await Promise.all(
       userSubscriptions.map(async (id) => {
         let match = await db

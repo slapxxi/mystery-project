@@ -20,6 +20,10 @@ function Layout(props: Props) {
     >
       <Global
         styles={(theme: AppTheme) => css`
+          :root {
+            color-scheme: light dark;
+          }
+
           html {
             background: ${theme.colors.bg};
             color: ${theme.colors.text};

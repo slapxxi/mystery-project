@@ -182,4 +182,10 @@ export interface Post {
   updatedAt: Date;
 }
 
+export type NormalizedPost = Normalized<Post>;
+
+type Normalized<T> = {
+  [P in keyof T]: T[P] extends Date ? string : T[P];
+};
+
 export interface Subscription extends Post {}
