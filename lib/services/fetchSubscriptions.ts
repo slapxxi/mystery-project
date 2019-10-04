@@ -27,7 +27,8 @@ async function fetchSubscriptions(user: AuthUser) {
             title: doc.data().title,
             description: doc.data().description,
             assets: doc.data().assets,
-            createdAt: doc.data().createdAt,
+            likes: doc.data().likes,
+            createdAt: toDate(doc.data().createdAt.seconds),
             updatedAt: new Date(),
           }))
         );
@@ -38,6 +39,12 @@ async function fetchSubscriptions(user: AuthUser) {
   }
 
   return subscriptions;
+}
+
+function toDate(seconds: number) {
+  let date = new Date(1970, 0, 1);
+  date.setSeconds(seconds);
+  return date;
 }
 
 export default fetchSubscriptions;

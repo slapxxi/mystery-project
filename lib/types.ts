@@ -178,6 +178,7 @@ export interface Post {
   description: string;
   author: UID;
   assets: string[];
+  likes: UID[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -187,5 +188,7 @@ export type NormalizedPost = Normalized<Post>;
 type Normalized<T> = {
   [P in keyof T]: T[P] extends Date ? string : T[P];
 };
+
+export type PostCategory = 'following' | 'popular' | 'recent';
 
 export interface Subscription extends Post {}

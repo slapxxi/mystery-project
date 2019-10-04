@@ -13,6 +13,7 @@ function Button(props: Props) {
         background: none;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
         color: grey;
+        vertical-align: middle;
 
         &:hover {
           border-color: grey;

@@ -3,11 +3,18 @@ import { jsx } from '@emotion/core';
 import { Link } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import routes from '@self/lib/routes';
+import { PostCategory } from '@self/lib/types';
 import styles from './Toolbar.styles';
 
-function Toolbar(props: any) {
+interface Props {
+  category: PostCategory;
+  onChangeCategory: (category: PostCategory) => void;
+  t: any;
+}
+
+function Toolbar(props: Props) {
   let { t, category, onChangeCategory } = props;
-  let [authState, authActions] = useAuth();
+  let [authState] = useAuth();
 
   function handleChangeCategory(event: any) {
     if (onChangeCategory) {

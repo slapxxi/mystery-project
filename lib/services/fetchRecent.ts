@@ -2,12 +2,12 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { Post } from '../types';
 
-async function fetchPosts() {
+async function fetchRecent() {
   let posts: Post[] = [];
 
   try {
     let db = firebase.firestore();
-    let postsCollection = db.collection('posts');
+    let postsCollection = db.collection('posts').orderBy('createdAt', 'desc');
     let docs = await postsCollection.get();
 
     docs.forEach((d) => {
@@ -39,4 +39,4 @@ function toDate(seconds: number) {
   return date;
 }
 
-export default fetchPosts;
+export default fetchRecent;

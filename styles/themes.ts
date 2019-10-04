@@ -4,7 +4,7 @@ const defaultTheme: AppTheme = {
   type: 'light',
   colors: {
     text: 'hsl(0, 10%, 20%)',
-    textLight: 'hsl(0, 0%, 60%)',
+    textLight: 'hsl(0, 0%, 70%)',
     textEm: 'hsl(0, 100%, 70%)',
     itemBg: 'hsl(0, 0%, 100%)',
     bg: 'hsl(0, 0%, 96%)',
@@ -23,11 +23,11 @@ const darkTheme: AppTheme = {
     text: 'hsl(1, 20%, 90%)',
     textLight: 'hsl(1, 10%, 30%)',
     textEm: 'hsl(1, 100%, 70%)',
-    itemBg: '',
+    itemBg: 'hsl(1, 1%, 20%)',
     bg: 'hsl(1, 1%, 10%)',
 
     headerBg: '',
-    headerLink: '',
+    headerLink: 'hsl(0, 1%, 60%)',
     headerLinkActive: '',
   },
   sizes: {},

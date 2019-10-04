@@ -32,7 +32,7 @@ class MyApp extends App {
     let { Component, pageProps } = this.props;
 
     return (
-      <AppContainer user={pageProps.user}>
+      <AppContainer user={pageProps.user} posts={pageProps.posts}>
         <Component {...pageProps} />
       </AppContainer>
     );

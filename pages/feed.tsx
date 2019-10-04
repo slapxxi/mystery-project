@@ -5,133 +5,88 @@ import Spinner from '@self/components/Spinner';
 import Toolbar from '@self/components/Toolbar';
 import { withTranslation } from '@self/i18n';
 import getUser from '@self/lib/getUser';
-import useAuth from '@self/lib/hooks/useAuth';
+import useStore from '@self/lib/hooks/useStore';
 import fetchPosts from '@self/lib/services/fetchPosts';
 import fetchSubscriptions from '@self/lib/services/fetchSubscriptions';
 import {
-  AuthUser,
-  Maybe,
   NormalizedPost,
   PageContext,
   PagePropsWithTranslation,
   Post,
+  PostCategory,
   Subscription,
 } from '@self/lib/types';
-import { useMachine } from '@xstate/react';
-import { assign, Machine } from 'xstate';
-
-type PostCategory = 'following' | 'popular' | 'recent';
 
 interface Props extends PagePropsWithTranslation<'common' | 'header'> {
   posts: NormalizedPost[];
   subscriptions?: Subscription[];
 }
 
-interface Context {
-  user: Maybe<AuthUser>;
-  subscriptions: Maybe<Subscription[]>;
-  error: Maybe<Error>;
-  category: PostCategory;
-}
-
-let pageMachine = Machine<Context>({
-  id: 'feed-page',
-  initial: 'idle',
-  context: {
-    user: null,
-    subscriptions: null,
-    error: null,
-    category: 'popular',
-  },
-  states: {
-    idle: {
-      on: {
-        '': [
-          { target: 'success', cond: (context) => !!context.subscriptions },
-          { target: 'loading', cond: (context) => !!context.user },
-        ],
-      },
-    },
-    loading: {
-      invoke: {
-        src: 'fetchSubscriptions',
-        onDone: {
-          target: 'success',
-          actions: assign({ subscriptions: (_: Context, event: any) => event.data }),
-        },
-        onError: {
-          target: 'error',
-          actions: assign({ error: (_: Context, event: any) => event.data }),
-        },
-      },
-    },
-    error: {
-      on: { RETRY: 'loading' },
-    },
-    success: {
-      on: {
-        CHANGE_CATEGORY: {
-          target: 'loading',
-          actions: ['setCategory'],
-        },
-      },
-    },
-  },
-});
-
 function FeedPage(props: Props) {
-  let { posts, t } = props;
-  let [authState] = useAuth();
-  let [pageState, send] = useMachine(pageMachine, {
-    context: { user: authState.context.user },
-    services: {
-      fetchSubscriptions: (context: Context) => fetchSubscriptions(context.user),
-    },
-    actions: {
-      setCategory: (context, event) => {
-        context.category = event.payload;
-      },
-    },
-  });
+  let { t } = props;
+  let [storeState, storeActions] = useStore();
+
+  function handleLike(post: Post) {
+    storeActions.like(post);
+  }
+
+  function handleUnlike(post: Post) {
+    storeActions.unlike(post);
+  }
 
   return (
     <div>
       <Toolbar
         t={t}
-        category={pageState.context.category}
+        category={storeState.context.category}
         onChangeCategory={(category: PostCategory) =>
-          send({ type: 'CHANGE_CATEGORY', payload: category })
+          storeActions.changeCategory(category)
         }
       ></Toolbar>
-      {pageState.matches('loading') ? (
-        <Spinner></Spinner>
-      ) : pageState.matches('success') ? (
-        <>
-          <PostsGrid posts={posts}></PostsGrid>
-        </>
-      ) : pageState.matches('error') ? (
-        <>
-          <span css={errorStyles}>{pageState.context.error.message}</span>
-          <button onClick={() => send('RETRY')}>Retry</button>
-        </>
-      ) : null}
+
+      {storeState.matches('loading') && (
+        <div
+          css={css`
+            margin: 0 auto;
+            padding: 50px;
+            text-align: center;
+          `}
+        >
+          <Spinner></Spinner>
+        </div>
+      )}
+
+      {storeState.matches('idle') && (
+        <PostsGrid
+          posts={storeState.context.posts}
+          onLike={handleLike}
+          onUnlike={handleUnlike}
+        ></PostsGrid>
+      )}
     </div>
   );
 }
 
 FeedPage.getInitialProps = async (context: PageContext) => {
-  let user = getUser(context);
   let posts: Post[] = [];
-  let subscriptions: Maybe<Subscription[]> = null;
+  let user = getUser(context);
 
   if (user) {
-    subscriptions = await fetchSubscriptions(user);
+    posts = await fetchSubscriptions(user);
+  } else {
+    posts = await fetchPosts();
   }
 
-  posts = await fetchPosts();
-
-  return { namespacesRequired: ['common', 'header'], posts, subscriptions };
+  return { namespacesRequired: ['common', 'header'] };
 };
+
+function toPosts(posts: NormalizedPost[]): Post[] {
+  return posts.map((p) => ({
+    ...p,
+    createdAt: new Date(p.createdAt),
+    updatedAt: new Date(p.updatedAt),
+  }));
+}
 
 let errorStyles = css`
   display: inline-block;
