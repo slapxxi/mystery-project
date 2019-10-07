@@ -5,28 +5,31 @@ import uuid from 'uuid';
 interface Props extends React.ComponentProps<'input'> {}
 
 function ButtonToggle(props: Props) {
-  let { checked, children, onChange } = props;
+  let { disabled, checked, children, onChange } = props;
   let id = uuid.v4();
 
   return (
     <label
       htmlFor={id}
       css={css`
+        display: flex;
+        align-items: center;
         padding: 6px;
-        border: 1px solid ${checked ? 'hotpink' : 'grey'};
+        border: 1px solid ${disabled ? 'black' : checked ? 'hotpink' : 'grey'};
         border-radius: 4px;
-        background: ${checked ? 'hotpink' : 'none'};
+        background: ${disabled ? 'black' : checked ? 'hotpink' : 'white'};
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
         color: ${checked ? 'white' : 'grey'};
+        transition: transform 0.3s;
 
         &:hover {
-          border-color: grey;
-          color: ${checked ? 'white' : 'grey'};
+          border-color: ${disabled ? 'black' : checked ? 'pink' : 'lightgrey'};
+          color: ${disabled ? 'grey' : checked ? 'white' : 'grey'};
           cursor: pointer;
         }
 
         &:active {
-          transform: scale(0.8);
+          transform: ${disabled ? 'none' : 'scale(0.9)'};
         }
       `}
     >
@@ -39,6 +42,7 @@ function ButtonToggle(props: Props) {
           display: none;
         `}
         onChange={onChange}
+        disabled={disabled}
       />
     </label>
   );

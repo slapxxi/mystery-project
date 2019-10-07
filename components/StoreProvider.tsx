@@ -6,15 +6,17 @@ import fetchSubscriptions from '@self/lib/services/fetchSubscriptions';
 import { AuthUser, Post, PostCategory } from '@self/lib/types';
 import { useMachine } from '@xstate/react';
 import { createContext, ReactNode } from 'react';
-import { Machine, State } from 'xstate';
+import { assign, Machine, sendParent, spawn, State } from 'xstate';
 
-export interface StoreContext {
+export interface Context {
   category: PostCategory;
   posts: Post[];
   user: AuthUser;
+  error: Error;
+  likeMachine: any;
 }
 
-export interface StoreState extends State<StoreContext> {}
+export interface StoreState extends State<Context> {}
 
 interface Store {
   state: StoreState;
@@ -24,55 +26,58 @@ interface Store {
 export let StoreContext = createContext({} as Store);
 let { Provider } = StoreContext;
 
-let likeMachine = Machine({
-  initial: 'idle',
-  context: {
-    error: null,
-    liking: null,
-  },
-  states: {
-    idle: {
-      on: {
-        LIKE: { target: 'liking', actions: ['setLiking'] },
-        UNLIKE: { target: 'unliking', actions: ['setLiking'] },
-      },
-    },
-    liking: {
-      invoke: {
-        src: 'like',
-        onDone: { target: 'success' },
-        onError: { target: 'error', actions: ['setError'] },
-      },
-    },
-    unliking: {
-      invoke: {
-        src: 'unlike',
-        onDone: { target: 'success' },
-        onError: { target: 'error', actions: ['setError'] },
-      },
-    },
-    error: {
-      entry: ['notify'],
-      on: {
-        DISMISS: { target: 'idle', actions: ['clearErrors'] },
-      },
-    },
-    success: {
-      type: 'final',
-    },
-  },
-});
+interface LikeMachineContext {
+  error: Error;
+  liking: Post;
+}
 
-export let storeMachine = Machine({
+let likeMachine = Machine<LikeMachineContext>(
+  {
+    initial: 'liking',
+    context: {
+      error: null,
+      liking: null,
+    },
+    states: {
+      liking: {
+        invoke: {
+          src: 'like',
+          onDone: { target: 'success' },
+          onError: { target: 'error', actions: 'setError' },
+        },
+      },
+      error: {
+        entry: 'notify',
+      },
+      success: {
+        type: 'final',
+      },
+    },
+  },
+  {
+    actions: {
+      setError: assign({ error: (_, event) => event.data }),
+      notify: sendParent((context, event) => {
+        return { type: 'LIKE.ERROR', payload: context.error };
+      }),
+    },
+    services: {
+      like: () =>
+        new Promise((res, rej) => {
+          rej(new Error('oopsie daisy'));
+        }),
+    },
+  }
+);
+
+export let storeMachine = Machine<Context>({
   initial: 'init',
   context: {
     user: null,
     posts: null,
     category: null,
-    syncing: null,
-    liking: null,
-    filters: null,
     error: null,
+    likeMachine: null,
   },
   states: {
     init: {
@@ -82,6 +87,7 @@ export let storeMachine = Machine({
     },
     idle: {
       on: {
+        'LIKE.ERROR': { actions: ['setError', 'notify'] },
         CHANGE_CATEGORY: { target: 'loading', actions: ['setCategory'] },
       },
     },
@@ -95,6 +101,9 @@ export let storeMachine = Machine({
     error: {
       entry: ['notify'],
     },
+  },
+  on: {
+    LIKE: { actions: ['spawnLikeMachine'] },
   },
 });
 
@@ -118,6 +127,13 @@ function StoreProvider(props: Props) {
       dataProvided: (context) => !!context.posts,
     },
     actions: {
+      spawnLikeMachine: assign({
+        likeMachine: (context: any, event: any) =>
+          spawn(likeMachine.withContext({ liking: event.payload, error: null })),
+      }),
+      setError: (context, event) => {
+        context.error = event.payload;
+      },
       setCategory: (context, event) => {
         context.category = event.payload;
       },

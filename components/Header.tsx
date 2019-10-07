@@ -76,4 +76,5 @@ function Header(props: Props) {
   );
 }
 
+// @ts-ignore
 export default withTranslation('header')(Header);

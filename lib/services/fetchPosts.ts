@@ -7,7 +7,7 @@ async function fetchPosts() {
 
   try {
     let db = firebase.firestore();
-    let postsCollection = db.collection('posts');
+    let postsCollection = db.collection('posts').orderBy('likes', 'desc');
     let docs = await postsCollection.get();
 
     docs.forEach((d) => {

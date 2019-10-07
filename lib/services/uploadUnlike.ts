@@ -7,8 +7,8 @@ async function uploadUnlike(post: Post, user: AuthUser) {
   let postRef = db.collection('posts').doc(post.id);
   let postData = await postRef.get();
   let uniqueLikes = postData.data().likes.filter((id: string) => id !== user.uid);
-
-  return postRef.update({ likes: uniqueLikes });
+  await postRef.update({ likes: uniqueLikes });
+  return (await postRef.get()).data();
 }
 
 export default uploadUnlike;

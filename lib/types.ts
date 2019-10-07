@@ -94,6 +94,7 @@ export interface PagePropsWithTranslation<Namespace extends TranslationNamespace
   extends PageProps,
     Omit<WithTranslation, 't'> {
   t: (key: PickTranslation<Namespace>) => string;
+  ssr?: boolean;
 }
 
 export interface ServerRequest extends Express.Request, http.IncomingMessage {

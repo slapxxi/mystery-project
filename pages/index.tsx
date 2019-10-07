@@ -20,4 +20,5 @@ IndexPage.getInitialProps = async () => {
 };
 
 export { IndexPage };
+// @ts-ignore
 export default withTranslation('common')(IndexPage);
