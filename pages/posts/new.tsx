@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import Spinner from '@self/components/Spinner';
 import { withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
-import useForm from '@self/lib/hooks/useForm';
 import useToast from '@self/lib/hooks/useToast';
 import isClient from '@self/lib/isClient';
 import isServer from '@self/lib/isServer';
@@ -11,8 +11,9 @@ import routes from '@self/lib/routes';
 import createPost from '@self/lib/services/createPost';
 import { PageContext, PagePropsWithTranslation } from '@self/lib/types';
 import userAuthenticated from '@self/lib/universal/userAuthenticated';
+import { useMachine } from '@xstate/react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { assign, Machine } from 'xstate';
 
 interface Props extends PagePropsWithTranslation<'common'> {}
 
@@ -22,68 +23,124 @@ if (isClient()) {
   worker = new Worker('@self/uploader.worker', { type: 'module' });
 }
 
+let createMachine = Machine({
+  initial: 'idle',
+  context: {
+    title: '',
+    description: '',
+    files: null,
+    preview: null,
+    error: null,
+    progress: 0,
+  },
+  states: {
+    idle: { on: { UPLOAD: { target: 'processing', actions: 'setFiles' } } },
+    processing: {
+      invoke: {
+        id: 'uploader',
+        src: 'uploader',
+      },
+      on: {
+        PROGRESS: { actions: 'setProgress', internal: false },
+        FINISH: { target: 'uploaded', actions: 'setPreview' },
+      },
+    },
+    uploaded: {
+      on: {
+        UPLOAD: { target: 'processing', actions: 'setFiles' },
+        CREATE: 'create',
+      },
+    },
+    create: {
+      invoke: {
+        src: 'uploadPost',
+        onDone: 'success',
+        onError: { target: 'error', actions: ['notify', 'setError'] },
+      },
+    },
+    success: {},
+    error: {},
+    hist: { type: 'history' },
+  },
+  on: {
+    UPDATE_TITLE: { target: 'hist', actions: 'setTitle', internal: true },
+    UPDATE_DESCRIPTION: { target: 'hist', actions: 'setDescription' },
+  },
+});
+
+// todo: upload post preview as well
 // todo: save form data between visits of the page so the user could
 // continue working
 function NewPostPage(props: Props) {
   let { t } = props;
-  let [processing, setProcessing] = useState(false);
   let [authState] = useAuth();
   let toast = useToast();
-  // todo: finish useForm hook
-  let [formState, formActions] = useForm();
-  let [imagePreview, setImagePreview] = useState('');
   let router = useRouter();
-
-  useEffect(() => {
-    if (worker) {
-      worker.addEventListener('message', (message) => {
-        let { data } = message;
-
-        if (data.type === 'processing') {
-          setProcessing(true);
+  let [state, send] = useMachine(createMachine, {
+    actions: {
+      setFiles: assignPayload('files'),
+      setPreview: assignPayload('preview'),
+      setTitle: assignPayload('title'),
+      setDescription: assignPayload('description'),
+      setProgress: assignPayload('progress'),
+      setError: assignData('error'),
+      notify: (context) => toast({ message: context.error.message }),
+    },
+    services: {
+      uploadPost: (context) =>
+        createPost(authState.context.user, {
+          title: context.title,
+          description: context.description,
+          assets: context.files,
+        }),
+      uploader: (context, event) => (sendInternal, onEvent) => {
+        function listener(event: any) {
+          sendInternal(event.data);
         }
 
-        if (data.type === 'result') {
-          let result = data.payload;
+        worker.addEventListener('message', listener);
 
-          setProcessing(false);
-          setImagePreview(result);
-        }
-      });
-    }
-  }, []);
+        worker.postMessage({ type: 'process', payload: context.files.item(0) });
+
+        return () => worker.removeEventListener('message', listener);
+      },
+    },
+  });
+
+  console.log(state.value);
 
   function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
     let { files } = event.target;
 
     if (worker && files.length > 0) {
-      formActions.setField('assets', files);
-      worker.postMessage({ type: 'process', payload: files[0] });
+      send({ type: 'UPLOAD', payload: files });
     }
   }
 
   function handleCreatePost() {
-    createPost(authState.context.user, {
-      title: formState.values.title,
-      description: formState.values.description,
-      assets: formState.values.assets,
-    })
-      .then((postID) => {
-        router.push(routes.post(postID).url, routes.post(postID).as);
-      })
-      .catch((e: Error) => {
-        toast({ message: e.message });
-      });
+    send('CREATE');
   }
 
   function handleChangeTitle(event: React.ChangeEvent<HTMLInputElement>) {
     let value = event.target.value;
-    formActions.setField('title', value);
+    send({ type: 'UPDATE_TITLE', payload: value });
   }
 
   function handleChangeDescription(event: React.ChangeEvent<HTMLInputElement>) {
     let value = event.target.value;
-    formActions.setField('description', value);
+    send({ type: 'UPDATE_DESCRIPTION', payload: value });
+  }
+
+  if (state.matches('success')) {
+    return <div>Successfully created.</div>;
+  }
+
+  if (state.matches('create')) {
+    return (
+      <div>
+        <Spinner></Spinner>
+      </div>
+    );
   }
 
   return (
@@ -95,7 +152,7 @@ function NewPostPage(props: Props) {
           id="title"
           type="text"
           name="title"
-          value={formState.values.title}
+          value={state.context.title}
           onChange={handleChangeTitle}
         />
       </div>
@@ -105,12 +162,15 @@ function NewPostPage(props: Props) {
           id="description"
           type="text"
           name="description"
-          value={formState.values.description}
+          value={state.context.description}
           onChange={handleChangeDescription}
         />
       </div>
-      {processing ? (
-        <div>Processing files...</div>
+      {state.matches('processing') ? (
+        <div>
+          <p>Progress: {state.context.progress * 100}%</p>
+          <div>Processing files...</div>
+        </div>
       ) : (
         <div>
           <label htmlFor="assets">{t('assets')}</label>
@@ -122,11 +182,15 @@ function NewPostPage(props: Props) {
             onChange={handleUpload}
             multiple
           />
-          <img src={imagePreview} alt="Image Preview" css={imageStyles} />
+        </div>
+      )}
+      {state.matches('uploaded') && (
+        <div>
+          <img src={state.context.preview} alt="Image Preview" css={imageStyles} />
         </div>
       )}
       <button>{t('preview')}</button>
-      <button onClick={handleCreatePost} disabled={processing}>
+      <button onClick={handleCreatePost} disabled={state.matches('processing')}>
         {t('create post')}
       </button>
     </div>
@@ -140,6 +204,16 @@ NewPostPage.getInitialProps = async (context: PageContext) => {
 
   return { namespacesRequired: ['common'] };
 };
+
+function assignData(fieldName: string) {
+  // @ts-ignore
+  return assign({ [fieldName]: (_: any, event: any) => event.data });
+}
+
+function assignPayload(fieldName: string) {
+  // @ts-ignore
+  return assign({ [fieldName]: (_: any, event: any) => event.payload });
+}
 
 const imageStyles = css`
   width: 200px;

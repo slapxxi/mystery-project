@@ -2,7 +2,7 @@ import { css } from '@emotion/core';
 import { AppTheme } from '@self/lib/types';
 import mediaQueries from '@self/styles/mediaQueries';
 
-const logo = css`
+export const logo = css`
   width: 32px;
 
   @media ${mediaQueries.tablet} {
@@ -10,7 +10,7 @@ const logo = css`
   }
 `;
 
-const link = (theme: AppTheme) => css`
+export const link = (theme: AppTheme) => css`
   position: relative;
   text-decoration: none;
 
@@ -29,12 +29,12 @@ const link = (theme: AppTheme) => css`
   }
 `;
 
-const header = css`
+export const header = (theme: AppTheme) => css`
   padding: 0.5rem;
-  background-color: hsl(0, 0%, 20%);
+  background-color: ${theme.colors.headerBg};
 `;
 
-const signinLink = (theme: AppTheme) => css`
+export const signinLink = (theme: AppTheme) => css`
   text-decoration: none;
   padding: 5px;
   border: 1px solid ${theme.colors.headerLink};
@@ -58,7 +58,7 @@ const signinLink = (theme: AppTheme) => css`
   }
 `;
 
-const nav = css`
+export const nav = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -67,7 +67,7 @@ const nav = css`
   padding: 0;
 `;
 
-const menu = css`
+export const menu = css`
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -79,12 +79,3 @@ const menu = css`
     margin-right: 1rem;
   }
 `;
-
-export default {
-  header,
-  link,
-  logo,
-  menu,
-  nav,
-  signinLink,
-};

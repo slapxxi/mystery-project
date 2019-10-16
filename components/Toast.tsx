@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import { AppTheme } from '@self/lib/types';
 import {
   createContext,
   ReactNode,
@@ -122,7 +123,7 @@ function ToastItem(props: {
   return (
     <li
       data-active={active}
-      css={css`
+      css={(theme: AppTheme) => css`
         box-sizing: border-box;
         display: flex;
         justify-content: space-between;
@@ -130,11 +131,11 @@ function ToastItem(props: {
         align-items: center;
         padding: 1rem;
         margin: 0.5rem;
-        background: white;
+        background: ${theme.colors.bg};
         transform: translateX(0);
         border-radius: 5px;
         transition: all 0.2s;
-        color: black;
+        color: ${theme.colors.text};
 
         &[data-active='true'] {
           transform: translateX(-100%);
@@ -146,9 +147,9 @@ function ToastItem(props: {
       {toast.message}
       <Button onClick={handleDismiss}>
         <CloseIcon
-          css={css`
+          css={(theme: AppTheme) => css`
             width: 10px;
-            fill: black;
+            fill: ${theme.colors.text};
           `}
         />
       </Button>

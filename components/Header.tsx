@@ -8,7 +8,7 @@ import useMediaQuery from '@self/lib/hooks/useMediaQuery';
 import { PagePropsWithTranslation } from '@self/lib/types';
 import mediaQueries from '@self/styles/mediaQueries';
 import Avatar from './Avatar';
-import styles from './Header.styles';
+import * as styles from './Header.styles';
 import Logo from './Logo';
 import Menu from './Menu';
 

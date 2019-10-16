@@ -4,17 +4,19 @@ import { AppTheme } from '@self/lib/types';
 export const container = css`
   display: grid;
   grid-template-columns: 1fr;
-  grid-gap: 20px;
+  grid-gap: 1rem;
   list-style: none;
-  margin: 20px;
+  margin: 0;
   padding: 0;
 
   @media screen and (min-width: 640px) {
     grid-template-columns: 1fr 1fr;
+    padding: 1rem;
   }
 
   @media screen and (min-width: 960px) {
     grid-template-columns: 1fr 1fr 1fr;
+    padding: 1rem;
   }
 `;
 

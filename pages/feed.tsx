@@ -32,6 +32,7 @@ interface Context {
   user: AuthUser;
   posts: Post[];
   category: PostCategory;
+  error: Error;
 }
 
 let pageMachine = Machine<Context>({
@@ -41,13 +42,14 @@ let pageMachine = Machine<Context>({
     user: null,
     posts: null,
     category: null,
+    error: null,
   },
   states: {
     init: {
       on: {
         '': [
           { target: 'idle', cond: 'isSSR' },
-          { target: 'loading', actions: ['setDefaultCategory'] },
+          { target: 'loading.sync', actions: ['setDefaultCategory'] },
         ],
       },
     },
@@ -63,10 +65,21 @@ let pageMachine = Machine<Context>({
       invoke: {
         src: 'fetchCategory',
         onDone: { target: 'idle', actions: 'setPosts' },
-        onError: 'error',
+        onError: { target: 'error', actions: 'setError' },
       },
+      initial: 'normal',
+      states: {
+        // when loading takes more than expected, change internal state to
+        // show spinner or else
+        normal: {
+          after: { 2000: 'slow' },
+        },
+        sync: { after: { 2000: 'slow' } },
+        slow: {},
+      },
+      on: { CHANGE_CATEGORY: { target: 'loading', actions: 'setCategory' } },
     },
-    error: {},
+    error: { on: { RETRY: 'loading.slow' } },
   },
 });
 
@@ -88,18 +101,15 @@ function FeedPage(props: Props) {
         category: (context, event) => event.payload,
       }),
       setDefaultCategory: assign<Context>({
-        category: (context, event) => (context.user ? 'following' : 'popular'),
+        category: (context) => (context.user ? 'following' : 'popular'),
       }),
       setPosts: assign<Context>({ posts: (context, event) => event.data }),
+      setError: assign<Context>({ error: (context, event) => event.data }),
     },
     services: {
-      fetchCategory: (context) => fetchCategory(context.category, context.user),
+      fetchCategory: (context: any) => fetchCategory(context.category, context.user),
     },
   });
-
-  function handleLike() {}
-
-  function handleUnlike() {}
 
   return (
     <div>
@@ -111,9 +121,14 @@ function FeedPage(props: Props) {
         }
       ></Toolbar>
 
-      {state.matches('error') && <div>Error occurred</div>}
+      {state.matches('error') && (
+        <div>
+          <p>{state.context.error.message}</p>
+          <button onClick={() => send('RETRY')}>Retry</button>
+        </div>
+      )}
 
-      {state.matches('loading') && (
+      {state.matches('loading.slow') && (
         <div
           css={css`
             margin: 0 auto;
@@ -125,12 +140,8 @@ function FeedPage(props: Props) {
         </div>
       )}
 
-      {state.matches('idle') && (
-        <PostsGrid
-          posts={state.context.posts}
-          onLike={handleLike}
-          onUnlike={handleUnlike}
-        ></PostsGrid>
+      {(state.matches('idle') || state.matches('loading.normal')) && (
+        <PostsGrid posts={state.context.posts}></PostsGrid>
       )}
     </div>
   );
@@ -154,6 +165,7 @@ function toPosts(posts: NormalizedPost[]): Post[] {
 }
 
 async function fetchCategory(category: PostCategory, user: Maybe<AuthUser>) {
+  console.log('fetching', category);
   switch (category) {
     case 'popular':
       return fetchPosts();

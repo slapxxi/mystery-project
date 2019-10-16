@@ -19,6 +19,7 @@ async function createPost(user: AuthUser, post: UserPost) {
       description: post.description,
       createdAt: new Date(),
       author: user.uid,
+      likes: [],
       assets,
     });
     return doc.id;

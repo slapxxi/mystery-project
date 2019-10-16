@@ -21,14 +21,14 @@ const darkTheme: AppTheme = {
   type: 'dark',
   colors: {
     text: 'hsl(1, 20%, 90%)',
-    textLight: 'hsl(1, 10%, 30%)',
+    textLight: 'hsl(0, 1%, 50%)',
     textEm: 'hsl(1, 100%, 70%)',
     itemBg: 'hsl(1, 1%, 20%)',
     bg: 'hsl(1, 1%, 10%)',
 
-    headerBg: '',
+    headerBg: 'hsl(0, 0%, 25%)',
     headerLink: 'hsl(0, 1%, 60%)',
-    headerLinkActive: '',
+    headerLinkActive: 'hsl(0, 1%, 70%)',
   },
   sizes: {},
   fonts: {},

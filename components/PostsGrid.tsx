@@ -20,8 +20,6 @@ import Spinner from './Spinner';
 
 interface Props {
   posts: Post[];
-  onLike?: (post: Post) => void;
-  onUnlike?: (post: Post) => void;
 }
 
 function PostsGrid(props: Props) {
