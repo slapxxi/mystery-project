@@ -28,6 +28,17 @@ function Layout(props: Props) {
             background: ${theme.colors.bg};
             color: ${theme.colors.text};
           }
+
+          a:link,
+          a:visited {
+            color: hsl(200, 70%, 50%);
+            text-decoration: none;
+          }
+
+          a:hover,
+          a:active {
+            color: hsl(200, 60%, 40%);
+          }
         `}
       ></Global>
       <Header />

@@ -5,10 +5,11 @@ import ActiveLink from './ActiveLink';
 
 interface Props {
   user: AuthUser;
+  size?: string;
 }
 
 function Avatar(props: Props) {
-  let { user } = props;
+  let { user, size = '30px', ...rest } = props;
 
   return (
     <ActiveLink href="/profile" passHref>
@@ -16,25 +17,26 @@ function Avatar(props: Props) {
         css={css`
           display: block;
           border-radius: 50%;
-          width: 30px;
-          height: 30px;
+          width: ${size};
+          height: ${size};
           overflow: hidden;
-          filter: grayscale(1) sepia(10%);
-
-          :hover,
-          &.active {
-            filter: none;
-          }
         `}
+        {...rest}
       >
-        <img
-          src={user.picture}
-          alt="User photo"
-          css={css`
-            width: 30px;
-            height: 30px;
-          `}
-        />
+        {user.picture ? (
+          <img
+            src={user.picture}
+            alt="User photo"
+            css={css`
+              width: ${size};
+              height: ${size};
+            `}
+          />
+        ) : (
+          <svg width="100%" height="100%" viewBox="0 0 10 10" fill="pink">
+            <circle cx="5" cy="5" r="10"></circle>
+          </svg>
+        )}
       </a>
     </ActiveLink>
   );

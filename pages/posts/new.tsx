@@ -63,7 +63,7 @@ let createMachine = Machine({
     hist: { type: 'history' },
   },
   on: {
-    UPDATE_TITLE: { target: 'hist', actions: 'setTitle', internal: true },
+    UPDATE_TITLE: { target: 'hist', actions: 'setTitle' },
     UPDATE_DESCRIPTION: { target: 'hist', actions: 'setDescription' },
   },
 });
@@ -78,12 +78,12 @@ function NewPostPage(props: Props) {
   let router = useRouter();
   let [state, send] = useMachine(createMachine, {
     actions: {
-      setFiles: assignPayload('files'),
+      setFiles: assignFromEvent('files', 'payload'),
       setPreview: assignPayload('preview'),
       setTitle: assignPayload('title'),
       setDescription: assignPayload('description'),
-      setProgress: assignPayload('progress'),
-      setError: assignData('error'),
+      setProgress: assignFromEvent('progress', 'payload'),
+      setError: assignFromEvent('error', 'data'),
       notify: (context) => toast({ message: context.error.message }),
     },
     services: {
@@ -93,8 +93,8 @@ function NewPostPage(props: Props) {
           description: context.description,
           assets: context.files,
         }),
-      uploader: (context, event) => (sendInternal, onEvent) => {
-        function listener(event: any) {
+      uploader: (context) => (sendInternal) => {
+        function listener(event: MessageEvent) {
           sendInternal(event.data);
         }
 
@@ -106,8 +106,6 @@ function NewPostPage(props: Props) {
       },
     },
   });
-
-  console.log(state.value);
 
   function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
     let { files } = event.target;
@@ -132,7 +130,7 @@ function NewPostPage(props: Props) {
   }
 
   if (state.matches('success')) {
-    return <div>Successfully created.</div>;
+    return <div>Successfully created. Redirecting...</div>;
   }
 
   if (state.matches('create')) {
@@ -205,9 +203,25 @@ NewPostPage.getInitialProps = async (context: PageContext) => {
   return { namespacesRequired: ['common'] };
 };
 
+interface ValidationResult {
+  result: boolean;
+  errors?: string[];
+}
+
+function validateTitle(value: string): ValidationResult {
+  if (value.length === 0) {
+    return { result: false, errors: ['Must not be empty'] };
+  }
+
+  return { result: true };
+}
+
 function assignData(fieldName: string) {
-  // @ts-ignore
-  return assign({ [fieldName]: (_: any, event: any) => event.data });
+  return assign({ [fieldName]: (_: any, event: any): any => event.data });
+}
+
+function assignFromEvent(fieldName: string, eventFieldName: string) {
+  return assign({ [fieldName]: (_: any, event: any): any => event[eventFieldName] });
 }
 
 function assignPayload(fieldName: string) {

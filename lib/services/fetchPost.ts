@@ -1,8 +1,9 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { ID } from '../types';
+import { ID, Post } from '../types';
+import parsePostData from './parsePostData';
 
-async function fetchPost(postID: ID) {
+async function fetchPost(postID: ID): Promise<Post> {
   let db = firebase.firestore();
 
   let post = await db
@@ -11,7 +12,7 @@ async function fetchPost(postID: ID) {
     .get();
 
   if (post.exists) {
-    return post.data();
+    return parsePostData(postID, post.data());
   } else {
     throw new Error('Requested post does not exist');
   }

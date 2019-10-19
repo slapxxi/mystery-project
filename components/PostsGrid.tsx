@@ -7,15 +7,14 @@ import uploadLike from '@self/lib/services/uploadLike';
 import uploadUnlike from '@self/lib/services/uploadUnlike';
 import { AppTheme, AuthUser, Post } from '@self/lib/types';
 import { useMachine } from '@xstate/react';
-import { format } from 'date-fns';
 import { assign, Machine } from 'xstate';
-import { log } from 'xstate/lib/actions';
 import Button from './Button';
 import ButtonToggle from './ButtonToggle';
 import CommentIcon from './icons/CommentIcon';
 import EyeIcon from './icons/EyeIcon';
 import HeartIcon from './icons/HeartIcon';
 import * as styles from './PostsGrid.styles';
+import ReadableDate from './ReadableDate';
 import Spinner from './Spinner';
 
 interface Props {
@@ -51,7 +50,6 @@ let cardMachine = Machine({
   },
   states: {
     init: {
-      entry: [log((context, event) => context)],
       on: { '': [{ target: 'idle.liked', cond: 'isLiked' }, { target: 'idle.unliked' }] },
     },
     idle: {
@@ -111,9 +109,7 @@ function PostCard(props: CardProps) {
             </Link>
           </h3>
           {post.createdAt ? (
-            <time css={styles.time}>
-              {format(new Date(post.createdAt), 'MMMM dd, y', {})}
-            </time>
+            <ReadableDate date={post.createdAt} css={styles.time}></ReadableDate>
           ) : null}
         </div>
         {authState.matches('auth') && (

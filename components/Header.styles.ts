@@ -32,6 +32,10 @@ export const link = (theme: AppTheme) => css`
 export const header = (theme: AppTheme) => css`
   padding: 0.5rem;
   background-color: ${theme.colors.headerBg};
+
+  @media screen and (min-width: 640px) {
+    padding: 1rem;
+  }
 `;
 
 export const signinLink = (theme: AppTheme) => css`

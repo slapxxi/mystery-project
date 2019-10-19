@@ -5,6 +5,7 @@ import Link from '@self/components/Link';
 import { withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import useMediaQuery from '@self/lib/hooks/useMediaQuery';
+import routes from '@self/lib/routes';
 import { PagePropsWithTranslation } from '@self/lib/types';
 import mediaQueries from '@self/styles/mediaQueries';
 import Avatar from './Avatar';
@@ -22,10 +23,24 @@ function Header(props: Props) {
   return (
     <header css={styles.header}>
       <ul css={styles.nav}>
+        {auth.matches('auth') && (
+          <li
+            css={css`
+              flex: ${matches ? -1 : 1};
+              order: ${matches ? 2 : 1};
+              ${matches && 'margin-right: 1rem;'}
+            `}
+          >
+            <ActiveLink href={routes.posts.new.url} passHref>
+              <a css={styles.signinLink}>Publish</a>
+            </ActiveLink>
+          </li>
+        )}
         <li
           css={css`
-            flex: ${matches ? -1 : 1};
+            flex: ${matches ? -1 : auth.matches('auth') ? 0 : 1};
             order: ${matches ? 2 : 0};
+            ${!matches && auth.matches('auth') && 'margin-right: 1rem;'}
           `}
         >
           {auth.matches('auth') ? (
@@ -39,6 +54,7 @@ function Header(props: Props) {
         <li
           css={css`
             order: ${matches ? 0 : 1};
+            ${!matches && auth.matches('auth') && 'margin-left: -1rem;'}
           `}
         >
           <Link href="/">

@@ -110,23 +110,26 @@ function Carousel(props: Props) {
           ))}
         </ul>
       </div>
-      <ul css={listStyles}>
-        {assets.map((asset, index) => (
-          <li css={listItemStyles} key={`${index}`}>
-            <input
-              id={`slide-${index}`}
-              type="radio"
-              name="slide"
-              defaultChecked={currentSlide === index}
-              onClick={() => handleClick(index)}
-              css={inputStyles}
-            />
-            <label htmlFor={`slide-${index}`} css={labelStyles}>
-              <img src={asset} alt="Image" css={imageStyles} />
-            </label>
-          </li>
-        ))}
-      </ul>
+
+      {assets.length > 1 && (
+        <ul css={listStyles}>
+          {assets.map((asset, index) => (
+            <li css={listItemStyles} key={`${index}`}>
+              <input
+                id={`slide-${index}`}
+                type="radio"
+                name="slide"
+                defaultChecked={currentSlide === index}
+                onClick={() => handleClick(index)}
+                css={inputStyles}
+              />
+              <label htmlFor={`slide-${index}`} css={labelStyles}>
+                <img src={asset} alt="Image" css={imageStyles} />
+              </label>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

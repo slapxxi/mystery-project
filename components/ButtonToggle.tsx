@@ -20,16 +20,11 @@ function ButtonToggle(props: Props) {
         background: ${disabled ? 'black' : checked ? 'hotpink' : 'white'};
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
         color: ${checked ? 'white' : 'grey'};
-        transition: transform 0.3s;
 
         &:hover {
           border-color: ${disabled ? 'black' : checked ? 'pink' : 'lightgrey'};
           color: ${disabled ? 'grey' : checked ? 'white' : 'grey'};
           cursor: pointer;
-        }
-
-        &:active {
-          transform: ${disabled ? 'none' : 'scale(0.9)'};
         }
       `}
     >

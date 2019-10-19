@@ -1,8 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Link } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
-import routes from '@self/lib/routes';
 import { PostCategory } from '@self/lib/types';
 import styles from './Toolbar.styles';
 
@@ -36,11 +34,6 @@ function Toolbar(props: Props) {
             <option value="following">Following</option>
             <option value="recent">Recent</option>
           </select>
-        </div>
-        <div>
-          <Link href={routes.posts.new.url}>
-            <a href="">{t('create post')}</a>
-          </Link>
         </div>
       </header>
     );

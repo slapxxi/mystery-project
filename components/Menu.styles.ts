@@ -33,11 +33,11 @@ export default {
     overflow: scroll;
     position: fixed;
     padding: calc(0.5rem + 12px) 0.5rem;
-    background-color: ${theme.colors.textEm};
+    background-color: ${theme.colors.headerBg};
     top: 0;
     height: 100vh;
     width: 100%;
-    color: white;
+    color: ${theme.colors.headerLink};
     transform: translateY(-100%);
     transition: transform 0.25s ease-in-out;
 
@@ -50,7 +50,7 @@ export default {
     text-align: right;
   `,
 
-  list: css`
+  list: (theme: AppTheme) => css`
     list-style: none;
     padding: 0;
 
@@ -63,10 +63,10 @@ export default {
       font-size: 1.4em;
       padding: 1rem;
       text-decoration: none;
-      color: white;
+      color: ${theme.colors.headerLink};
 
       :hover {
-        color: grey;
+        color: ${theme.colors.headerLinkActive};
       }
     }
   `,
