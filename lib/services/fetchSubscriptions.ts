@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { AuthUser, ID, Subscription } from '../types';
+import parsePostData from './parsePostData';
 
 async function fetchSubscriptions(user: AuthUser) {
   let subscriptions: Subscription[] = [];
@@ -21,16 +22,7 @@ async function fetchSubscriptions(user: AuthUser) {
           .get();
 
         subscriptions = subscriptions.concat(
-          match.docs.map((doc) => ({
-            id: doc.id,
-            author: doc.data().author,
-            title: doc.data().title,
-            description: doc.data().description,
-            assets: doc.data().assets,
-            likes: doc.data().likes,
-            createdAt: toDate(doc.data().createdAt.seconds),
-            updatedAt: new Date(),
-          }))
+          match.docs.map((doc) => parsePostData(doc.id, doc.data()))
         );
       })
     );

@@ -12,7 +12,7 @@ function ButtonToggle(props: Props) {
     <label
       htmlFor={id}
       css={css`
-        display: flex;
+        display: inline-flex;
         align-items: center;
         padding: 6px;
         border: 1px solid ${disabled ? 'black' : checked ? 'hotpink' : 'grey'};

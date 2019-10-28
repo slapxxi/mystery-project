@@ -3,26 +3,66 @@ import { jsx } from '@emotion/core';
 import { withTranslation } from '@self/i18n';
 import { PagePropsWithTranslation } from '@self/lib/types';
 import { useMachine } from '@xstate/react';
-import { assign, Machine } from 'xstate';
+import { Machine, sendParent } from 'xstate';
 
 interface Props extends PagePropsWithTranslation<'common' | 'header'> {}
+
+let childMachine = Machine({
+  initial: 'init',
+  states: {
+    init: {
+      entry: [sendParent('PING')],
+      after: {
+        1000: 'setup',
+      },
+    },
+    setup: {
+      entry: [sendParent('PING')],
+      after: {
+        1000: 'finish',
+      },
+    },
+    finish: {
+      entry: [sendParent('PING')],
+      type: 'final',
+    },
+  },
+});
 
 let testMachine = Machine({
   initial: 'idle',
   context: { title: 'Empty' },
   states: {
     idle: {
-      entry: 'setTitle',
-      // on: { UPDATE: { actions: 'setTitle' } },
+      on: { UPDATE: 'updating' },
     },
+    updating: {
+      invoke: {
+        src: 'childMachine',
+        onDone: 'finish',
+      },
+      on: {
+        PING: { actions: 'log' },
+      },
+    },
+    finish: {},
   },
 });
 
 function IndexPage(props: Props) {
   let { t } = props;
   let [state, send] = useMachine(testMachine, {
-    actions: { setTitle: assign({ title: () => 'hello' }) },
+    actions: {
+      log(context, event) {
+        console.log(context, event);
+      },
+    },
+    services: {
+      childMachine,
+    },
   });
+
+  console.log(state.value);
 
   return (
     <div>

@@ -180,8 +180,17 @@ export interface Post {
   author: UID;
   assets: string[];
   likes: UID[];
+  comments: Comment[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface Comment {
+  id: ID;
+  postID: ID;
+  body: string;
+  replies: Comment[];
+  likes: UID[];
 }
 
 export type NormalizedPost = Normalized<Post>;

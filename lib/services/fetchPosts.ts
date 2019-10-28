@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { Post } from '../types';
+import parsePostData from './parsePostData';
 
 async function fetchPosts() {
   let posts: Post[] = [];
@@ -13,18 +14,7 @@ async function fetchPosts() {
     docs.forEach((d) => {
       let data = d.data();
       let { id } = d;
-      let { title, description, author, assets, createdAt, likes } = data;
-
-      posts.push({
-        id,
-        title,
-        description,
-        author,
-        assets,
-        likes,
-        createdAt: toDate(createdAt.seconds),
-        updatedAt: new Date(),
-      });
+      posts.push(parsePostData(id, data));
     });
   } catch (e) {
     console.log(e);

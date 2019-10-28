@@ -58,6 +58,7 @@ let cardMachine = Machine({
         unliked: { on: { LIKE: { target: 'updating' } } },
         updating: {
           invoke: {
+            id: 'update-post',
             src: 'update',
             onDone: { target: '#card.init', actions: 'setPost' },
             onError: 'error',
@@ -162,7 +163,7 @@ function PostCard(props: CardProps) {
           <EyeIcon css={styles.icon}></EyeIcon>0
         </span>
         <span css={styles.iconContainer}>
-          <CommentIcon css={styles.icon}></CommentIcon>0
+          <CommentIcon css={styles.icon}></CommentIcon> {post.comments.length}
         </span>
         <span css={styles.iconContainer}>
           <HeartIcon
