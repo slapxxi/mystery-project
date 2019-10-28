@@ -24,8 +24,6 @@ function IndexPage(props: Props) {
     actions: { setTitle: assign({ title: () => 'hello' }) },
   });
 
-  console.log('renders', state.value);
-
   return (
     <div>
       <h1 data-testid="title">{t('index')}</h1>

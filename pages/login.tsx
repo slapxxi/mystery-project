@@ -16,8 +16,6 @@ function LoginPage(props: Props) {
   let { t } = props;
   let [auth, actions] = useAuth();
 
-  console.log(auth.value);
-
   if (auth.matches('auth')) {
     Router.push('/feed');
 
