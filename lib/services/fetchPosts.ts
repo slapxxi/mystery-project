@@ -3,6 +3,7 @@ import 'firebase/firestore';
 import { Post } from '../types';
 import parsePostData from './parsePostData';
 
+// fix: posts with comments do not appear in popular category
 async function fetchPosts() {
   let posts: Post[] = [];
 
@@ -11,13 +12,13 @@ async function fetchPosts() {
     let postsCollection = db.collection('posts').orderBy('likes', 'desc');
     let docs = await postsCollection.get();
 
-    docs.forEach((d) => {
+    docs.forEach(async (d) => {
       let data = d.data();
       let { id } = d;
-      posts.push(parsePostData(id, data));
+      posts.push(await parsePostData(id, data));
     });
   } catch (e) {
-    console.log(e);
+    throw e;
   }
 
   return posts;

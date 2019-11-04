@@ -11,10 +11,10 @@ async function fetchRecent() {
     let postsCollection = db.collection('posts').orderBy('createdAt', 'desc');
     let docs = await postsCollection.get();
 
-    docs.forEach((d) => {
+    docs.forEach(async (d) => {
       let data = d.data();
       let { id } = d;
-      posts.push(parsePostData(id, data));
+      posts.push(await parsePostData(id, data));
     });
   } catch (e) {
     console.log(e);

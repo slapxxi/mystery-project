@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { AuthUser, Comment } from '../types';
+import fetchUser from './fetchUser';
 
 async function uploadCommentUnlike(comment: Comment, user: AuthUser): Promise<Comment> {
   let db = firebase.firestore();
@@ -20,7 +21,10 @@ async function uploadCommentUnlike(comment: Comment, user: AuthUser): Promise<Co
     .data()
     .comments.find((c: Comment) => c.id === comment.id);
 
-  return updatedComment;
+  return {
+    ...updatedComment,
+    author: await fetchUser((updatedComment.author as unknown) as string),
+  };
 }
 
 export default uploadCommentUnlike;

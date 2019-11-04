@@ -13,7 +13,6 @@ function Layout(props: Props) {
   return (
     <div
       css={(theme: AppTheme) => css`
-        max-width: 960px;
         margin: 0 auto;
         background: ${theme.colors.bg};
       `}

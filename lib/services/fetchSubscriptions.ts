@@ -4,7 +4,7 @@ import { AuthUser, ID, Subscription } from '../types';
 import parsePostData from './parsePostData';
 
 async function fetchSubscriptions(user: AuthUser) {
-  let subscriptions: Subscription[] = [];
+  let subscriptions: Promise<Subscription>[] = [];
 
   try {
     let db = firebase.firestore();
@@ -22,7 +22,7 @@ async function fetchSubscriptions(user: AuthUser) {
           .get();
 
         subscriptions = subscriptions.concat(
-          match.docs.map((doc) => parsePostData(doc.id, doc.data()))
+          match.docs.map(async (doc) => await parsePostData(doc.id, doc.data()))
         );
       })
     );
@@ -30,7 +30,7 @@ async function fetchSubscriptions(user: AuthUser) {
     throw e;
   }
 
-  return subscriptions;
+  return Promise.all(subscriptions);
 }
 
 function toDate(seconds: number) {

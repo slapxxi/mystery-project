@@ -48,11 +48,14 @@ export interface AppTheme {
   fonts: {};
 }
 
-export interface AuthUser {
+export interface User {
   uid: string;
   picture: string;
   handle: string;
+  name: string;
 }
+
+export interface AuthUser extends User {}
 
 export interface AuthState {
   user: Maybe<AuthUser>;
@@ -191,6 +194,8 @@ export interface Comment {
   body: string;
   replies: Comment[];
   likes: UID[];
+  author: AuthUser;
+  createdAt: Date;
 }
 
 export type NormalizedPost = Normalized<Post>;

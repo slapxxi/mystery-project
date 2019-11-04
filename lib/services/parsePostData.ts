@@ -1,7 +1,8 @@
 import { DocumentData } from '@google-cloud/firestore';
 import { Comment, ID, Post } from '../types';
+import fetchUser from './fetchUser';
 
-function parsePostData(id: ID, data: DocumentData): Post {
+async function parsePostData(id: ID, data: DocumentData): Promise<Post> {
   let {
     assets,
     author,
@@ -13,11 +14,23 @@ function parsePostData(id: ID, data: DocumentData): Post {
     updatedAt,
   } = data;
 
+  let parsedComments: Comment[] = await Promise.all(
+    comments.map(async (c: any) => {
+      let author = await fetchUser(c.author);
+      return {
+        ...c,
+        likes: c.likes || [],
+        postID: id,
+        author,
+      };
+    })
+  );
+
   return {
     id,
     assets,
     author,
-    comments: comments.map((c: Comment) => ({ ...c, likes: c.likes || [], postID: id })),
+    comments: parsedComments,
     description,
     likes,
     title,
