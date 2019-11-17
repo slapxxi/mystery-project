@@ -3,30 +3,21 @@ import 'firebase/firestore';
 import { Post } from '../types';
 import parsePostData from './parsePostData';
 
-async function fetchRecent() {
-  let posts: Post[] = [];
-
+async function fetchRecent(): Promise<Post[]> {
   try {
     let db = firebase.firestore();
-    let postsCollection = db.collection('posts').orderBy('createdAt', 'desc');
-    let docs = await postsCollection.get();
-
-    docs.forEach(async (d) => {
-      let data = d.data();
-      let { id } = d;
-      posts.push(await parsePostData(id, data));
+    let postsCollection = db
+      .collection('posts')
+      .limit(3)
+      .orderBy('createdAt', 'desc');
+    let snapshot = await postsCollection.get();
+    let docs = snapshot.docs.map((doc) => {
+      return parsePostData(doc.id, doc.data());
     });
+    return Promise.all(docs);
   } catch (e) {
-    console.log(e);
+    throw e;
   }
-
-  return posts;
-}
-
-function toDate(seconds: number) {
-  let date = new Date(1970, 0, 1);
-  date.setSeconds(seconds);
-  return date;
 }
 
 export default fetchRecent;

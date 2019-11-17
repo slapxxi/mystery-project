@@ -36,6 +36,7 @@ interface Context {
 }
 
 let pageMachine = Machine<Context>({
+  id: 'page',
   initial: 'init',
   context: {
     ssr: null,
@@ -57,19 +58,19 @@ let pageMachine = Machine<Context>({
       on: {
         CHANGE_CATEGORY: {
           target: 'loading',
-          actions: 'setCategory',
+          actions: ['setCategory'],
         },
       },
     },
     loading: {
       invoke: {
         src: 'fetchCategory',
-        onDone: { target: 'idle', actions: 'setPosts' },
-        onError: { target: 'error', actions: 'setError' },
+        onDone: { target: 'idle', actions: ['setPosts'] },
+        onError: { target: 'error', actions: ['setError'] },
       },
       initial: 'normal',
       states: {
-        // when loading takes more than expected, change internal state to
+        // when loading takes more than expected, show spinner
         // show spinner or else
         normal: {
           after: { 2000: 'slow' },
@@ -97,13 +98,15 @@ function FeedPage(props: Props) {
       isSSR: (context) => context.ssr,
     },
     actions: {
+      setPosts: assign<Context>({
+        posts: (context, event) => event.data,
+      }),
       setCategory: assign<Context>({
         category: (context, event) => event.payload,
       }),
       setDefaultCategory: assign<Context>({
         category: (context) => (context.user ? 'following' : 'popular'),
       }),
-      setPosts: assign<Context>({ posts: (context, event) => event.data }),
       setError: assign<Context>({ error: (context, event) => event.data }),
     },
     services: {
@@ -164,8 +167,7 @@ function toPosts(posts: NormalizedPost[]): Post[] {
   }));
 }
 
-async function fetchCategory(category: PostCategory, user: Maybe<AuthUser>) {
-  console.log('fetching', category);
+function fetchCategory(category: PostCategory, user: Maybe<AuthUser>) {
   switch (category) {
     case 'popular':
       return fetchPosts();

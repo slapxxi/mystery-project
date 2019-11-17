@@ -62,8 +62,6 @@ function IndexPage(props: Props) {
     },
   });
 
-  console.log(state.value);
-
   return (
     <div>
       <h1 data-testid="title">{t('index')}</h1>
