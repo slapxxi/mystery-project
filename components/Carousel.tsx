@@ -4,6 +4,7 @@ import { AppTheme } from '@self/lib/types';
 import { useMachine } from '@xstate/react';
 import { useEffect } from 'react';
 import { assign, Machine } from 'xstate';
+import ImageWithAspectRatio from './ImageWithAspectRatio';
 
 interface Context {
   numberOfSlides: number;
@@ -50,7 +51,7 @@ let carouselMachine = Machine<Context, State, Event>({
         src: 'changeSlide',
         onDone: {
           target: 'idle',
-          actions: assign({ currentSlide: (_context, event) => event.data }),
+          actions: 'setSlide',
         },
       },
     },
@@ -60,6 +61,9 @@ let carouselMachine = Machine<Context, State, Event>({
 function Carousel(props: Props) {
   let { assets } = props;
   let [state, send] = useMachine(carouselMachine, {
+    actions: {
+      setSlide: assign<Context>({ currentSlide: (_, event) => event.data }),
+    },
     context: { numberOfSlides: assets.length, currentSlide: 0 },
     services: { changeSlide },
     guards: { inBoundaries },
@@ -105,7 +109,12 @@ function Carousel(props: Props) {
         >
           {assets.map((asset, index) => (
             <li key={index}>
-              <img src={asset} alt="slide" />
+              <ImageWithAspectRatio
+                width={800}
+                height={600}
+                alt="slide"
+                src={asset}
+              ></ImageWithAspectRatio>
             </li>
           ))}
         </ul>
@@ -124,7 +133,13 @@ function Carousel(props: Props) {
                 css={inputStyles}
               />
               <label htmlFor={`slide-${index}`} css={labelStyles}>
-                <img src={asset} alt="Image" css={imageStyles} />
+                <ImageWithAspectRatio
+                  width={800}
+                  height={600}
+                  src={asset}
+                  alt="Image"
+                  css={imageStyles}
+                ></ImageWithAspectRatio>
               </label>
             </li>
           ))}
@@ -178,7 +193,7 @@ const inputStyles = (theme: AppTheme) => css`
 `;
 
 const labelStyles = css`
-  display: inline-block;
+  display: block;
   line-height: 0;
   border: 2px solid transparent;
   border-radius: 4px;

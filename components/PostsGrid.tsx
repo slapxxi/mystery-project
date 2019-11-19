@@ -13,6 +13,7 @@ import ButtonToggle from './ButtonToggle';
 import CommentIcon from './icons/CommentIcon';
 import EyeIcon from './icons/EyeIcon';
 import HeartIcon from './icons/HeartIcon';
+import ImageWithAspectRatio from './ImageWithAspectRatio';
 import * as styles from './PostsGrid.styles';
 import ReadableDate from './ReadableDate';
 import Spinner from './Spinner';
@@ -154,9 +155,12 @@ function PostCard(props: CardProps) {
         )}
       </header>
 
-      <div css={styles.imageContainer}>
-        <img src={post.assets[0]} alt="" css={styles.image} />
-      </div>
+      <ImageWithAspectRatio
+        width={800}
+        height={600}
+        src={post.assets[0]}
+        alt=""
+      ></ImageWithAspectRatio>
 
       <footer css={styles.footer}>
         <span css={styles.iconContainer}>

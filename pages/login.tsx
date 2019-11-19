@@ -34,6 +34,15 @@ function LoginPage(props: Props) {
     );
   }
 
+  if (auth.matches('error')) {
+    return (
+      <div>
+        <h1>Error Occurred</h1>
+        <button onClick={() => actions.retry()}>Retry</button>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h1>{t('login')}</h1>

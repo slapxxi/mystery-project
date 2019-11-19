@@ -28,8 +28,6 @@ interface Props extends PagePropsWithTranslation<'common'> {
   post: Post;
 }
 
-interface Schema {}
-
 interface Context {
   post: Post;
   user: AuthUser;
@@ -150,8 +148,6 @@ function PostPage(props: Props) {
   function handleSubmitComment(value: string) {
     send('SUBMIT_COMMENT');
   }
-
-  console.log(state.value, state.context);
 
   return (
     <div

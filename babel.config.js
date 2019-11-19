@@ -18,7 +18,10 @@ module.exports = {
           },
         ],
       ],
-      plugins: ['babel-plugin-macros'],
+      plugins: [
+        'babel-plugin-macros',
+        '@babel/plugin-proposal-nullish-coalescing-operator',
+      ],
     },
 
     production: {
@@ -39,7 +42,10 @@ module.exports = {
           },
         ],
       ],
-      plugins: ['babel-plugin-macros'],
+      plugins: [
+        'babel-plugin-macros',
+        '@babel/plugin-proposal-nullish-coalescing-operator',
+      ],
     },
 
     test: {

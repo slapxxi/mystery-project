@@ -6,7 +6,7 @@ const HOST = process.env.HOST;
 async function auth(user: firebase.User): Promise<AuthUser> {
   let token = await user.getIdToken();
 
-  let response = await fetch(`${HOST}/api/login`, {
+  let response = await fetch(`${HOST ?? ''}/api/login`, {
     method: 'POST',
     credentials: 'same-origin',
     headers: { 'content-type': 'application/json' },

@@ -69,8 +69,7 @@ let createMachine = Machine({
 });
 
 // todo: upload post preview as well
-// todo: save form data between visits of the page so the user could
-// continue working
+// todo: save form data between visits of the page
 function NewPostPage(props: Props) {
   let { t } = props;
   let [authState] = useAuth();

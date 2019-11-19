@@ -6,10 +6,7 @@ import parsePostData from './parsePostData';
 async function fetchRecent(): Promise<Post[]> {
   try {
     let db = firebase.firestore();
-    let postsCollection = db
-      .collection('posts')
-      .limit(3)
-      .orderBy('createdAt', 'desc');
+    let postsCollection = db.collection('posts').orderBy('createdAt', 'desc');
     let snapshot = await postsCollection.get();
     let docs = snapshot.docs.map((doc) => {
       return parsePostData(doc.id, doc.data());

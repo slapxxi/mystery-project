@@ -5,6 +5,7 @@ import { AuthUser } from '../types';
 interface ActionCreators {
   signOut: () => void;
   signIn: (user?: AuthUser) => void;
+  retry: () => void;
 }
 
 function useAuth(): [AuthProviderContext['state'], ActionCreators] {
@@ -16,6 +17,9 @@ function useAuth(): [AuthProviderContext['state'], ActionCreators] {
     },
     signOut: () => {
       send({ type: 'SIGN_OUT' });
+    },
+    retry: () => {
+      send({ type: 'RETRY' });
     },
   };
 

@@ -27,13 +27,14 @@ interface State {
     init: {};
     anonymous: {};
     auth: {};
+    hist: {};
     signingIn: {};
     signingOut: {};
     error: {};
   };
 }
 
-type Event = { type: 'SIGN_IN' } | { type: 'SIGN_OUT' };
+type Event = { type: 'SIGN_IN' } | { type: 'SIGN_OUT' } | { type: 'RETRY' };
 
 let context = createContext({} as AuthProviderContext);
 let { Provider, Consumer } = context;
@@ -62,7 +63,7 @@ let providerMachine = Machine<Context, State, Event>({
         onDone: { target: 'auth', actions: assign({ user: (_, event) => event.data }) },
         onError: {
           target: 'error',
-          actions: assign({ error: (_, event) => event.data }),
+          actions: 'setError',
         },
       },
     },
@@ -72,11 +73,19 @@ let providerMachine = Machine<Context, State, Event>({
         onDone: { target: 'anonymous', actions: assign({ user: () => null }) },
         onError: {
           target: 'error',
-          actions: assign({ error: (_, event) => event.data }),
+          actions: 'setError',
         },
       },
     },
-    error: { entry: ['notify'] },
+    hist: {
+      type: 'history',
+    },
+    error: {
+      entry: ['notify'],
+      on: {
+        RETRY: 'signingIn',
+      },
+    },
   },
 });
 
@@ -84,15 +93,25 @@ function AuthProvider(props: Props) {
   let { user, children } = props;
   let [state, send] = useMachine(providerMachine, {
     context: { user },
-    services: { signIn, signOut },
-    actions: { notify: (context) => toast({ message: context.error.message }) },
+    services: {
+      signIn: () => {
+        return signInWithPopup();
+      },
+      signOut: () => {
+        return signOutService();
+      },
+    },
+    actions: {
+      notify: (context) => toast({ message: context.error.message }),
+      setError: assign<Context>({ error: (context, event) => event.data }),
+    },
   });
   let toast = useToast();
 
   return <Provider value={{ state, send }}>{children}</Provider>;
 }
 
-async function signIn() {
+async function signIn(context: any, event: any) {
   let result = await signInWithPopup();
   return result;
 }
