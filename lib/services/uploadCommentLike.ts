@@ -1,8 +1,8 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import uniq from 'lodash-es/uniq';
-import { AuthUser, Comment } from '../types';
-import fetchUser from './fetchUser';
+import { AuthUser, Comment, DBComment } from '../types';
+import parseComment from './parseComment';
 
 async function uploadCommentLike(comment: Comment, user: AuthUser): Promise<Comment> {
   let db = firebase.firestore();
@@ -10,9 +10,9 @@ async function uploadCommentLike(comment: Comment, user: AuthUser): Promise<Comm
   let postSnapshot = await postRef.get();
   let comments = postSnapshot.data().comments;
 
-  let updatedComment: Comment;
+  let updatedComment: DBComment;
 
-  let updatedComments = comments.map((c: Comment) => {
+  let updatedComments = comments.map((c: DBComment) => {
     if (c.id === comment.id) {
       updatedComment = { ...c, likes: uniq([...(c.likes || []), user.uid]) };
       return updatedComment;
@@ -22,10 +22,7 @@ async function uploadCommentLike(comment: Comment, user: AuthUser): Promise<Comm
 
   await postRef.update({ comments: updatedComments });
 
-  return {
-    ...updatedComment,
-    author: await fetchUser((updatedComment.author as unknown) as string),
-  };
+  return parseComment(updatedComment);
 }
 
 export default uploadCommentLike;

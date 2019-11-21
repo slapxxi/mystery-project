@@ -188,13 +188,41 @@ export interface Post {
   updatedAt: Date;
 }
 
+export interface DBComment {
+  id: ID;
+  postID: ID;
+  body: string;
+  replies: DBCommentReply[];
+  likes: UID[];
+  author: UID;
+  createdAt: Date;
+}
+
 export interface Comment {
   id: ID;
   postID: ID;
   body: string;
-  replies: Comment[];
+  replies: CommentReply[];
   likes: UID[];
-  author: AuthUser;
+  author: User;
+  createdAt: Date;
+}
+
+export interface DBCommentReply {
+  id: ID;
+  commentID: ID;
+  body: string;
+  likes: UID[];
+  author: ID;
+  createdAt: Date;
+}
+
+export interface CommentReply {
+  id: ID;
+  commentID: ID;
+  body: string;
+  likes: UID[];
+  author: User;
   createdAt: Date;
 }
 

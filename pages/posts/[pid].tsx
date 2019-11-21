@@ -13,13 +13,7 @@ import routes from '@self/lib/routes';
 import fetchPost from '@self/lib/services/fetchPost';
 import fetchUser from '@self/lib/services/fetchUser';
 import uploadComment from '@self/lib/services/uploadComment';
-import {
-  AppTheme,
-  AuthUser,
-  PageContext,
-  PagePropsWithTranslation,
-  Post,
-} from '@self/lib/types';
+import { AppTheme, AuthUser, PageContext, PagePropsWithTranslation, Post } from '@self/lib/types';
 import { useMachine } from '@xstate/react';
 import ErrorPage from 'next/error';
 import { assign, Machine } from 'xstate';

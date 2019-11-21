@@ -2,6 +2,7 @@
 import { css, jsx } from '@emotion/core';
 import uploadCommentLike from '@self/lib/services/uploadCommentLike';
 import uploadCommentUnlike from '@self/lib/services/uploadCommentUnlike';
+import uploadReply from '@self/lib/services/uploadReply';
 import { AppTheme, AuthUser, Comment } from '@self/lib/types';
 import { useMachine } from '@xstate/react';
 import { assign, Machine } from 'xstate';
@@ -25,6 +26,7 @@ interface CommentContext {
   error: Error;
   user: AuthUser;
   comment: Comment;
+  reply: string;
 }
 
 let likeStateNode = {
@@ -55,6 +57,7 @@ let commentMachine = Machine<CommentContext>({
     error: null,
     user: null,
     comment: null,
+    reply: null,
   },
   states: {
     init: {
@@ -78,12 +81,24 @@ let commentMachine = Machine<CommentContext>({
             },
             replying: {
               on: {
+                CHANGE: { actions: 'setReply' },
                 SEND: 'sending',
                 CANCEL: 'idle',
               },
             },
-            sending: {},
-            error: {},
+            sending: {
+              invoke: {
+                src: 'postReply',
+                onDone: { target: 'idle', actions: ['setComment', 'clearReply'] },
+                onError: { target: 'error', actions: 'setError' },
+              },
+            },
+            error: {
+              on: {
+                RETRY: 'sending',
+                CANCEL: 'idle',
+              },
+            },
           },
         },
       },
@@ -118,10 +133,12 @@ function CommentItem(props: CommentItemProps) {
       },
     },
     actions: {
-      setComment: assign({ comment: (_: any, event: any) => event.data }),
-      setError: assign({ error: (_: any, event: any) => event.data }),
-      setLiked: assign({
-        liked: (_: any, event: any) => event.data.likes.includes(user.uid),
+      setComment: assign<CommentContext>({ comment: (_, event) => event.data }),
+      setError: assign<CommentContext>({ error: (_, event) => event.data }),
+      setReply: assign<CommentContext>({ reply: (_, event) => event.payload }),
+      clearReply: assign<CommentContext>({ reply: (_, event) => null }),
+      setLiked: assign<CommentContext>({
+        liked: (_, event) => event.data.likes.includes(user.uid),
       }),
     },
     services: {
@@ -133,14 +150,18 @@ function CommentItem(props: CommentItemProps) {
           return uploadCommentUnlike(comment, user);
         }
       },
+      postReply(context, event) {
+        let { comment, user, reply } = context;
+        return uploadReply(comment, user, reply);
+      },
     },
   });
 
-  function handleLike(liked: boolean) {
-    if (liked) {
-      send('LIKE');
-    } else {
+  function handleLikeButton() {
+    if (state.context.liked) {
       send('UNLIKE');
+    } else {
+      send('LIKE');
     }
   }
 
@@ -150,6 +171,18 @@ function CommentItem(props: CommentItemProps) {
 
   function handleCancel() {
     send('CANCEL');
+  }
+
+  function handleSendReply() {
+    send('SEND');
+  }
+
+  function handleRetry() {
+    send('RETRY');
+  }
+
+  function handleChangeReply(event: any) {
+    send({ type: 'CHANGE', payload: event.target.value });
   }
 
   if (state.matches('error')) {
@@ -183,35 +216,121 @@ function CommentItem(props: CommentItemProps) {
           </h1>
           <p>{state.context.comment.body}</p>
 
-          <footer>
+          <footer
+            css={css`
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+            `}
+          >
             {state.matches('auth') && (
               <>
                 {state.matches('auth.interacting.idle') && (
-                  <button onClick={handleReply}>Reply</button>
+                  <button
+                    onClick={handleReply}
+                    css={(theme) => css`
+                      ${textButtonStyles(theme)}
+                      margin-right: 1rem;
+                    `}
+                  >
+                    Reply
+                  </button>
                 )}
-                {state.matches('auth.interacting.replying') && (
-                  <>
-                    <textarea name="" id="" cols={30} rows={10}></textarea>
+                {state.matches('auth.interacting.sending') && (
+                  <div>
+                    <Spinner></Spinner>
+                  </div>
+                )}
+                {state.matches('auth.interacting.error') && (
+                  <div>
+                    <span>Error sending reply</span>
                     <button onClick={handleCancel}>Cancel</button>
-                    <button onClick={handleCancel}>Send</button>
-                  </>
+                    <button onClick={handleRetry}>Retry</button>
+                  </div>
                 )}
+                <button css={textButtonStyles} onClick={handleLikeButton}>
+                  <HeartIcon
+                    width={14}
+                    css={css`
+                      margin-right: 0.2rem;
+                      fill: ${state.matches('auth.liking.updating')
+                        ? 'slategrey'
+                        : state.context.liked
+                        ? 'hotpink'
+                        : 'grey'};
+                    `}
+                  ></HeartIcon>{' '}
+                  {state.context.comment.likes.length}
+                </button>
 
-                <Like
-                  liked={state.context.liked}
-                  updating={state.matches('auth.liking.updating')}
-                  onChange={handleLike}
-                ></Like>
+                {state.matches('auth.interacting.replying') && (
+                  <div
+                    css={css`
+                      flex: 1 100%;
+                    `}
+                  >
+                    <textarea
+                      name=""
+                      id=""
+                      cols={30}
+                      rows={10}
+                      value={state.context.reply}
+                      onChange={handleChangeReply}
+                    ></textarea>
+                    <div>
+                      <button onClick={handleCancel}>Cancel</button>
+                      <button onClick={handleSendReply}>Send</button>
+                    </div>
+                  </div>
+                )}
               </>
             )}
-            {/* <ReadableDate date={state.context.comment.createdAt}></ReadableDate> */}
-            <HeartIcon width={14}></HeartIcon> {state.context.comment.likes.length}
           </footer>
         </div>
       </div>
+
+      <ul
+        css={css`
+          margin: 0;
+          margin-left: 1rem;
+          list-style: none;
+        `}
+      >
+        {state.context.comment.replies.map((r) => (
+          <li key={r.id}>
+            <h2
+              css={css`
+                display: flex;
+                align-items: center;
+                font-size: 1em;
+              `}
+            >
+              <Avatar
+                user={r.author}
+                css={css`
+                  margin-right: 1rem;
+                `}
+              ></Avatar>
+              {r.author.name}
+            </h2>
+            {r.body}
+          </li>
+        ))}
+      </ul>
     </li>
   );
 }
+
+const textButtonStyles = (theme: AppTheme) => css`
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: 0;
+  :hover {
+    color: ${theme.colors.textEm};
+  }
+`;
 
 interface LikeProps {
   liked: boolean;

@@ -1,5 +1,5 @@
 import { DocumentData } from '@google-cloud/firestore';
-import { Comment, ID, Post } from '../types';
+import { Comment, DBComment, ID, Post } from '../types';
 import fetchUser from './fetchUser';
 
 async function parsePostData(id: ID, data: DocumentData): Promise<Post> {
@@ -15,12 +15,22 @@ async function parsePostData(id: ID, data: DocumentData): Promise<Post> {
   } = data;
 
   let parsedComments: Comment[] = await Promise.all(
-    comments.map(async (c: any) => {
+    comments.map(async (c: DBComment) => {
       let author = await fetchUser(c.author);
+      let asyncReplies = (c.replies ?? []).map(async (r) => {
+        let replyAuthor = await fetchUser(r.author);
+        return {
+          ...r,
+          author: replyAuthor,
+        };
+      });
+      let replies = await Promise.all(asyncReplies);
+
       return {
         ...c,
         likes: c.likes || [],
         postID: id,
+        replies,
         author,
       };
     })
