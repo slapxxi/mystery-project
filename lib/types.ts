@@ -176,11 +176,23 @@ export interface UserPost {
   assets: FileList;
 }
 
-export interface Post {
+export interface DBPost {
   id: string;
   title: string;
   description: string;
   author: UID;
+  assets: string[];
+  likes: UID[];
+  comments: Comment[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  description: string;
+  author: User;
   assets: string[];
   likes: UID[];
   comments: Comment[];

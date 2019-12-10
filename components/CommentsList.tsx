@@ -14,11 +14,13 @@ import Spinner from './Spinner';
 interface CommentProps {
   comments: Comment[];
   user?: AuthUser;
+  onDelete: (comment: Comment) => void;
 }
 
 interface CommentItemProps {
   comment: Comment;
   user?: AuthUser;
+  onDelete: (comment: Comment) => void;
 }
 
 interface CommentContext {
@@ -51,6 +53,7 @@ let likeStateNode = {
 };
 
 let commentMachine = Machine<CommentContext>({
+  id: 'comment',
   initial: 'init',
   context: {
     liked: null,
@@ -68,16 +71,53 @@ let commentMachine = Machine<CommentContext>({
     auth: {
       type: 'parallel',
       states: {
+        status: {
+          initial: 'init',
+          states: {
+            init: {
+              on: {
+                '': [{ target: 'owned', cond: 'isOwner' }, { target: 'private' }],
+              },
+            },
+            owned: {
+              on: {
+                DELETE: {
+                  target: '#comment.auth.interacting.deleting',
+                  cond: 'isConfirmed',
+                },
+              },
+            },
+            private: {},
+          },
+        },
         liking: {
-          ...likeStateNode,
+          id: 'like',
+          initial: 'idle',
+          states: {
+            idle: {
+              on: {
+                LIKE: { target: 'updating' },
+                UNLIKE: { target: 'updating' },
+              },
+            },
+            updating: {
+              invoke: {
+                src: 'update',
+                onDone: { target: 'idle', actions: ['setLiked', 'setComment'] },
+                onError: { target: 'error', actions: 'setError' },
+              },
+            },
+            error: {},
+          },
         },
         interacting: {
           initial: 'idle',
           states: {
             idle: {
-              on: {
-                REPLY: 'replying',
-              },
+              on: { REPLY: 'replying' },
+            },
+            deleting: {
+              entry: 'deleteComment',
             },
             replying: {
               on: {
@@ -108,19 +148,28 @@ let commentMachine = Machine<CommentContext>({
 });
 
 function CommentsList(props: CommentProps) {
-  let { comments, user } = props;
+  let { comments, user, onDelete } = props;
+
+  function handleDelete(comment: Comment) {
+    onDelete(comment);
+  }
 
   return (
     <ul css={commentsStyles}>
       {comments.map((comment) => (
-        <CommentItem comment={comment} user={user} key={comment.id}></CommentItem>
+        <CommentItem
+          comment={comment}
+          user={user}
+          key={comment.id}
+          onDelete={handleDelete}
+        ></CommentItem>
       ))}
     </ul>
   );
 }
 
 function CommentItem(props: CommentItemProps) {
-  let { comment, user } = props;
+  let { comment, user, onDelete } = props;
   let [state, send] = useMachine<CommentContext, any>(commentMachine, {
     context: {
       user,
@@ -131,6 +180,12 @@ function CommentItem(props: CommentItemProps) {
       isAuth(context) {
         return !!context.user;
       },
+      isOwner(context) {
+        return context.user.uid === context.comment.author.uid;
+      },
+      isConfirmed() {
+        return confirm('Are you sure you want to delete this comment?');
+      },
     },
     actions: {
       setComment: assign<CommentContext>({ comment: (_, event) => event.data }),
@@ -140,6 +195,7 @@ function CommentItem(props: CommentItemProps) {
       setLiked: assign<CommentContext>({
         liked: (_, event) => event.data.likes.includes(user.uid),
       }),
+      deleteComment: (context) => onDelete(context.comment),
     },
     services: {
       update(context, event) {
@@ -179,6 +235,10 @@ function CommentItem(props: CommentItemProps) {
 
   function handleRetry() {
     send('RETRY');
+  }
+
+  function handleDelete() {
+    send('DELETE');
   }
 
   function handleChangeReply(event: any) {
@@ -225,6 +285,10 @@ function CommentItem(props: CommentItemProps) {
           >
             {state.matches('auth') && (
               <>
+                {state.matches('auth.status.owned') && (
+                  <button onClick={handleDelete}>Delete</button>
+                )}
+
                 {state.matches('auth.interacting.idle') && (
                   <button
                     onClick={handleReply}

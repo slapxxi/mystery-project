@@ -2,7 +2,8 @@
 import { css, jsx } from '@emotion/core';
 import { AppTheme } from '@self/lib/types';
 import { useMachine } from '@xstate/react';
-import { useEffect } from 'react';
+import { gsap } from 'gsap';
+import { useRef } from 'react';
 import { assign, Machine } from 'xstate';
 import ImageWithAspectRatio from './ImageWithAspectRatio';
 
@@ -13,12 +14,24 @@ interface Context {
 
 interface State {
   states: {
-    idle: {};
-    changing: {};
+    focus: {
+      states: {
+        focused: {};
+        blured: {};
+      };
+    };
+    activity: {
+      states: {
+        idle: {};
+        changing: {};
+      };
+    };
   };
 }
 
 type Event =
+  | { type: 'FOCUS' }
+  | { type: 'BLUR' }
   | { type: 'CHANGE_SLIDE'; payload: number }
   | { type: 'NEXT_SLIDE' }
   | { type: 'PREV_SLIDE' }
@@ -31,27 +44,51 @@ interface Props {
 
 let carouselMachine = Machine<Context, State, Event>({
   id: 'carousel',
-  initial: 'idle',
   context: {
     numberOfSlides: null,
     currentSlide: null,
   },
+  type: 'parallel',
   states: {
-    idle: {
-      on: {
-        NEXT_SLIDE: { target: 'changing' },
-        PREV_SLIDE: { target: 'changing' },
-        FIRST_SLIDE: { target: 'changing' },
-        LAST_SLIDE: { target: 'changing' },
-        CHANGE_SLIDE: { target: 'changing', cond: 'inBoundaries' },
+    focus: {
+      initial: 'blured',
+      states: {
+        blured: {
+          on: {
+            FOCUS: 'focused',
+          },
+        },
+        focused: {
+          invoke: {
+            src: 'bindKeyboardListener',
+          },
+          on: {
+            BLUR: 'blured',
+          },
+        },
       },
     },
-    changing: {
-      invoke: {
-        src: 'changeSlide',
-        onDone: {
-          target: 'idle',
-          actions: 'setSlide',
+    activity: {
+      initial: 'idle',
+      states: {
+        idle: {
+          on: {
+            NEXT_SLIDE: { target: 'changing' },
+            PREV_SLIDE: { target: 'changing' },
+            FIRST_SLIDE: { target: 'changing' },
+            LAST_SLIDE: { target: 'changing' },
+            CHANGE_SLIDE: { target: 'changing', cond: 'inBoundaries' },
+          },
+        },
+        changing: {
+          entry: ['centerView'],
+          invoke: {
+            src: 'changeSlide',
+            onDone: {
+              target: 'idle',
+              actions: 'setSlide',
+            },
+          },
         },
       },
     },
@@ -60,42 +97,74 @@ let carouselMachine = Machine<Context, State, Event>({
 
 function Carousel(props: Props) {
   let { assets } = props;
+  let rootElementRef = useRef<HTMLDivElement>();
   let [state, send] = useMachine(carouselMachine, {
     actions: {
       setSlide: assign<Context>({ currentSlide: (_, event) => event.data }),
+      centerView() {
+        if (rootElementRef.current) {
+          let position = {
+            top: window.scrollY,
+            left: rootElementRef.current.offsetLeft,
+          };
+          gsap.to(position, {
+            duration: 0.3,
+            top: rootElementRef.current.offsetTop,
+            onUpdate() {
+              window.scrollTo(position);
+            },
+          });
+        }
+      },
     },
     context: { numberOfSlides: assets.length, currentSlide: 0 },
-    services: { changeSlide },
+    services: {
+      changeSlide,
+      bindKeyboardListener(context, event) {
+        function keyboardListener(event: KeyboardEvent) {
+          switch (event.key) {
+            case 'ArrowUp':
+            case 'ArrowRight':
+              event.preventDefault();
+              return event.shiftKey ? send('LAST_SLIDE') : send('NEXT_SLIDE');
+            case 'ArrowDown':
+            case 'ArrowLeft':
+              event.preventDefault();
+              return event.shiftKey ? send('FIRST_SLIDE') : send('PREV_SLIDE');
+            default:
+              return;
+          }
+        }
+
+        return () => {
+          window.addEventListener('keydown', keyboardListener);
+          return () => window.removeEventListener('keydown', keyboardListener);
+        };
+      },
+    },
     guards: { inBoundaries },
   });
   let { currentSlide } = state.context;
-
-  useEffect(() => {
-    function keyboardListener(event: KeyboardEvent) {
-      switch (event.key) {
-        case 'ArrowUp':
-        case 'ArrowRight':
-          event.preventDefault();
-          return event.shiftKey ? send('LAST_SLIDE') : send('NEXT_SLIDE');
-        case 'ArrowDown':
-        case 'ArrowLeft':
-          event.preventDefault();
-          return event.shiftKey ? send('FIRST_SLIDE') : send('PREV_SLIDE');
-        default:
-          return;
-      }
-    }
-
-    window.addEventListener('keydown', keyboardListener);
-    return () => window.removeEventListener('keydown', keyboardListener);
-  }, []);
 
   function handleClick(index: number) {
     send('CHANGE_SLIDE', { payload: index });
   }
 
+  function handleMouseEnter() {
+    send('FOCUS');
+  }
+
+  function handleMouseLeave() {
+    send('BLUR');
+  }
+
   return (
-    <div>
+    <div
+      onClick={handleMouseEnter}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      ref={rootElementRef}
+    >
       <div css={viewportStyles}>
         <ul
           css={[
@@ -149,57 +218,6 @@ function Carousel(props: Props) {
   );
 }
 
-const viewportStyles = css`
-  overflow-x: hidden;
-`;
-
-const slidesStyles = css`
-  display: flex;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  transition: transform 0.3s ease-out;
-
-  & > li {
-    flex: 1 0 100%;
-
-    & > img {
-      width: 100%;
-    }
-  }
-`;
-
-const listStyles = css`
-  display: flex;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-`;
-
-const listItemStyles = css`
-  flex: 1 auto;
-`;
-
-const imageStyles = css`
-  width: 100%;
-`;
-
-const inputStyles = (theme: AppTheme) => css`
-  display: none;
-
-  &[checked] + label {
-    border-color: ${theme.colors.textEm};
-  }
-`;
-
-const labelStyles = css`
-  display: block;
-  line-height: 0;
-  border: 2px solid transparent;
-  border-radius: 4px;
-  overflow: hidden;
-`;
-
 function changeSlide(context: Context, event: Event) {
   let { numberOfSlides, currentSlide } = context;
 
@@ -226,5 +244,58 @@ function inBoundaries(context: Context, event: Event) {
     return context.numberOfSlides - 1 >= event.payload;
   }
 }
+
+const viewportStyles = css`
+  overflow-x: hidden;
+`;
+
+const slidesStyles = css`
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: transform 0.3s ease-out;
+
+  & > li {
+    flex: 1 0 100%;
+
+    & > img {
+      width: 100%;
+    }
+  }
+`;
+
+const listStyles = css`
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+`;
+
+const listItemStyles = css`
+  flex: 1 auto;
+  max-width: 120px;
+`;
+
+const imageStyles = css`
+  width: 100%;
+`;
+
+const inputStyles = (theme: AppTheme) => css`
+  display: none;
+
+  &[checked] + label {
+    border-color: ${theme.colors.textEm};
+  }
+`;
+
+const labelStyles = css`
+  display: block;
+  line-height: 0;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  overflow: hidden;
+`;
 
 export default Carousel;

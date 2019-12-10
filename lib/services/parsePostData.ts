@@ -39,11 +39,11 @@ async function parsePostData(id: ID, data: DocumentData): Promise<Post> {
   return {
     id,
     assets,
-    author,
-    comments: parsedComments,
     description,
     likes,
     title,
+    author: await fetchUser(author),
+    comments: parsedComments,
     createdAt: new Date(createdAt.seconds),
     updatedAt: updatedAt && new Date(updatedAt.seconds),
   };

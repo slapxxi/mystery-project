@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import { AuthUser } from '@self/lib/types';
+import { User } from '@self/lib/types';
 import ActiveLink from './ActiveLink';
 
 interface Props {
-  user: AuthUser;
+  user: User;
   size?: string;
 }
 

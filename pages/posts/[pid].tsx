@@ -11,9 +11,15 @@ import { Link, withTranslation } from '@self/i18n';
 import useAuth from '@self/lib/hooks/useAuth';
 import routes from '@self/lib/routes';
 import fetchPost from '@self/lib/services/fetchPost';
-import fetchUser from '@self/lib/services/fetchUser';
 import uploadComment from '@self/lib/services/uploadComment';
-import { AppTheme, AuthUser, PageContext, PagePropsWithTranslation, Post } from '@self/lib/types';
+import {
+  AppTheme,
+  AuthUser,
+  Comment,
+  PageContext,
+  PagePropsWithTranslation,
+  Post,
+} from '@self/lib/types';
 import { useMachine } from '@xstate/react';
 import ErrorPage from 'next/error';
 import { assign, Machine } from 'xstate';
@@ -25,7 +31,6 @@ interface Props extends PagePropsWithTranslation<'common'> {
 interface Context {
   post: Post;
   user: AuthUser;
-  author: AuthUser;
   comment: string;
   error: Error;
 }
@@ -50,66 +55,76 @@ let uploadStateNode = {
 };
 
 let pageMachine = Machine<Context>({
-  id: 'post-machine',
-  initial: 'idle',
+  initial: 'init',
   context: {
     user: null,
     post: null,
-    author: null,
     comment: null,
     error: null,
   },
   states: {
-    idle: {
-      on: {
-        '': [
-          { target: 'error.notFound', cond: (context) => !context.post },
-          { target: 'viewing.auth', cond: 'isAuth' },
-          { target: 'viewing.loading' },
-        ],
-      },
-    },
-    viewing: {
-      states: {
-        loading: {
-          invoke: {
-            src: 'fetchAuthor',
-            onDone: {
-              target: 'user',
-              // @ts-ignore
-              actions: assign({ author: (context, event) => event.data }),
-            },
-          },
-        },
-        user: {
-          ...uploadStateNode,
-          on: {
-            CHANGE_COMMENT: { actions: 'setComment' },
-            SUBMIT_COMMENT: '.uploading',
-          },
-        },
-        auth: {
-          ...uploadStateNode,
-          on: {
-            EDIT: '#editing',
-            CHANGE_COMMENT: { actions: 'setComment' },
-            SUBMIT_COMMENT: '.uploading',
-          },
-        },
-        hist: { type: 'history' },
-      },
-    },
-    editing: { id: 'editing', on: { CANCEL: 'viewing.hist' } },
-    error: {
-      states: {
-        notFound: {},
-      },
-    },
+    init: {},
   },
 });
 
-// todo: move user extraction to `getInitialProps` or to the post fetching service
-// todo: eliminate layout shifting while content is loading
+// let pageMachine = Machine<Context>({
+//   id: 'post-machine',
+//   initial: 'idle',
+//   context: {
+//     user: null,
+//     post: null,
+//     author: null,
+//     comment: null,
+//     error: null,
+//   },
+//   states: {
+//     idle: {
+//       on: {
+//         '': [
+//           { target: 'error.notFound', cond: (context) => !context.post },
+//           { target: 'viewing.auth', cond: 'isAuth' },
+//           { target: 'viewing.loading' },
+//         ],
+//       },
+//     },
+//     viewing: {
+//       states: {
+//         loading: {
+//           invoke: {
+//             src: 'fetchAuthor',
+//             onDone: {
+//               target: 'user',
+//               actions: 'setAuthor',
+//             },
+//           },
+//         },
+//         user: {
+//           ...uploadStateNode,
+//           on: {
+//             CHANGE_COMMENT: { actions: 'setComment' },
+//             SUBMIT_COMMENT: '.uploading',
+//           },
+//         },
+//         auth: {
+//           ...uploadStateNode,
+//           on: {
+//             EDIT: '#editing',
+//             CHANGE_COMMENT: { actions: 'setComment' },
+//             SUBMIT_COMMENT: '.uploading',
+//           },
+//         },
+//         hist: { type: 'history' },
+//       },
+//     },
+//     editing: { id: 'editing', on: { CANCEL: 'viewing.hist' } },
+//     error: {
+//       states: {
+//         notFound: {},
+//       },
+//     },
+//   },
+// });
+
 function PostPage(props: Props) {
   let { post } = props;
   let [authState] = useAuth();
@@ -123,10 +138,9 @@ function PostPage(props: Props) {
     },
     guards: {
       isAuth: (context) =>
-        context.user && context.post && context.user.uid === context.post.author,
+        context.user && context.post && context.user.uid === context.post.author.uid,
     },
     services: {
-      fetchAuthor: (context) => fetchUser(context.post.author),
       upload: (context) => uploadComment(context.post, context.user, context.comment),
     },
   });
@@ -141,6 +155,10 @@ function PostPage(props: Props) {
 
   function handleSubmitComment(value: string) {
     send('SUBMIT_COMMENT');
+  }
+
+  function handleDeleteComment(comment: Comment) {
+    send({ type: 'DELETE_COMMENT', payload: comment });
   }
 
   return (
@@ -161,7 +179,11 @@ function PostPage(props: Props) {
         `}
       >
         {state.matches('viewing.user') && (
-          <Avatar size="40px" user={state.context.author} css={avatarStyles}></Avatar>
+          <Avatar
+            size="40px"
+            user={state.context.post.author}
+            css={avatarStyles}
+          ></Avatar>
         )}
         {state.matches('viewing.auth') && (
           <Avatar size="40px" user={state.context.user} css={avatarStyles}></Avatar>
@@ -214,10 +236,10 @@ function PostPage(props: Props) {
               )}
               {state.matches('viewing.user') && (
                 <Link
-                  href={routes.user(state.context.author.uid).url}
-                  as={routes.user(state.context.author.uid).as}
+                  href={routes.user(state.context.post.author.uid).url}
+                  as={routes.user(state.context.post.author.uid).as}
                 >
-                  <a>{state.context.author.handle}</a>
+                  <a>{state.context.post.author.handle}</a>
                 </Link>
               )}
               {authState.matches('auth') && state.matches('viewing.user') && (
@@ -299,6 +321,7 @@ function PostPage(props: Props) {
             <CommentsList
               comments={state.context.post.comments}
               user={state.context.user}
+              onDelete={handleDeleteComment}
             ></CommentsList>
 
             {authState.matches('auth') && (
