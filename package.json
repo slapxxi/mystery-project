@@ -66,7 +66,7 @@
     "gsap": "^3.0.2",
     "isomorphic-unfetch": "^3.0.0",
     "lodash-es": "^4.17.15",
-    "next": "9.0.4",
+    "next": "11.1.0",
     "next-i18next": "^2.0.0",
     "next-transpile-modules": "^2.3.1",
     "pipeline.macro": "^1.1.0",
