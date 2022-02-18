@@ -23,7 +23,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "session-file-store": "^1.2.0",
-    "url-parse": "^1.4.7",
+    "url-parse": "^1.5.6",
     "uuid": "^3.3.2"
   }
 }
